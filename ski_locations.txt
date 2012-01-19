@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Sentier de ski de randonnée, Angrignon", 
+		"address": "3400, boulevard des Trinitaires"
+    }, 
+    {
+        "name": "Sentier de ski de randonnée, Comp env Saint-Michel", 
+		"address": "rue D'Iberville and rue de Louvain"
+    }, 
+    {
+        "name": "Sentier de ski de randonnée, De la Merci", 
+		"address": "boulevard Gouin Ouest and boulevard de l'Acadie"
+    }, 
+    {
+        "name": "Sentier de ski alpin, Des Hirondelles", 
+		"address": "Parc des Hirondelles"
+    }, 
+    {
+        "name": "Sentier de ski de randonnée, Maisonneuve", 
+		"address": "4601, rue Sherbrooke Est"
+    }, 
+    {
+        "name": "Sentier de ski de randonnée, Mont-Royal", 
+		"address": "Parc du Mont-Royal"
+    }
+]

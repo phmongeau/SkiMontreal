@@ -1,0 +1,80 @@
+{
+    "Sentier de ski alpin, Des Hirondelles": {
+        "arrondissement": {
+            "cle": "ahc", 
+            "date_maj": "2012-01-19 09:56:35", 
+            "name": "Ahuntsic - Cartierville"
+        }, 
+        "condition": "Mauvaise", 
+        "deblaye": null, 
+        "latitude": 45.5755015, 
+        "longitude": -73.6425452, 
+        "name": "Sentier de ski alpin, Des Hirondelles", 
+        "open": null
+    }, 
+    "Sentier de ski de randonnée, Angrignon": {
+        "arrondissement": {
+            "cle": "sou", 
+            "date_maj": "2012-01-18 16:45:00", 
+            "name": "Le Sud-Ouest"
+        }, 
+        "condition": "Bonne", 
+        "deblaye": "1", 
+        "latitude": 45.4445195, 
+        "longitude": -73.60173200000001, 
+        "name": "Sentier de ski de randonnée, Angrignon", 
+        "open": "1"
+    }, 
+    "Sentier de ski de randonnée, Comp env Saint-Michel": {
+        "arrondissement": {
+            "cle": "vsp", 
+            "date_maj": "2012-01-19 07:30:53", 
+            "name": "Villeray - Saint-Michel - Parc-Extension"
+        }, 
+        "condition": "Bonne", 
+        "deblaye": "1", 
+        "latitude": 45.5694585, 
+        "longitude": -73.6336094, 
+        "name": "Sentier de ski de randonnée, Comp env Saint-Michel", 
+        "open": "1"
+    }, 
+    "Sentier de ski de randonnée, De la Merci": {
+        "arrondissement": {
+            "cle": "ahc", 
+            "date_maj": "2012-01-19 09:56:35", 
+            "name": "Ahuntsic - Cartierville"
+        }, 
+        "condition": "Mauvaise", 
+        "deblaye": null, 
+        "latitude": 45.5434683, 
+        "longitude": -73.7030331, 
+        "name": "Sentier de ski de randonnée, De la Merci", 
+        "open": null
+    }, 
+    "Sentier de ski de randonnée, Maisonneuve": {
+        "arrondissement": {
+            "cle": "rpp", 
+            "date_maj": "2012-01-19 01:47:14", 
+            "name": "Rosemont - La Petite-Patrie"
+        }, 
+        "condition": "Excellente", 
+        "deblaye": "1", 
+        "latitude": 45.561006, 
+        "longitude": -73.5547333, 
+        "name": "Sentier de ski de randonnée, Maisonneuve", 
+        "open": "1"
+    }, 
+    "Sentier de ski de randonnée, Mont-Royal": {
+        "arrondissement": {
+            "cle": "vma", 
+            "date_maj": "2012-01-19 07:31:35", 
+            "name": "Ville-Marie"
+        }, 
+        "condition": "Bonne", 
+        "deblaye": "1", 
+        "latitude": 45.5075447, 
+        "longitude": -73.5878649, 
+        "name": "Sentier de ski de randonnée, Mont-Royal", 
+        "open": "1"
+    }
+}
