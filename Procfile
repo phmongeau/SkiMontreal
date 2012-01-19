@@ -1,1 +1,1 @@
-web: python -m SimpleHTTPServer 80
+web: python server.py

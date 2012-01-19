@@ -23,7 +23,7 @@ def get_coords(place):
 
 if __name__ == '__main__':
 
-    with open("ski_locations.txt") as f:
+    with open("bin/ski_locations.txt") as f:
         file = codecs.getreader("utf-8")(f).read()
         addresses = json.loads(file)
 
@@ -36,6 +36,6 @@ if __name__ == '__main__':
         locations[name]["latitude"] = lat
         locations[name]["longitude"] = lng
 
-    with open("ski_coords.json", "w") as file:
+    with open("static/ski_coords.json", "w") as file:
         out =  json.dumps(locations, indent=4, sort_keys=True, ensure_ascii=False)
         file.write(out.encode("utf8"))
