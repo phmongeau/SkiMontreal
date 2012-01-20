@@ -73,7 +73,7 @@ function addMarker(latlng, map, track)
 
 		if (track.open == "null" || track.open == "0" || !track.open)
 			marker.setIcon("ski_grey.png");
-		else if (track.condition == "Bonne")
+		else if (track.condition == "Bonne" || track.condition == "Excellente")
 			marker.setIcon("ski_blue.png");
 		else
 			marker.setIcon("ski_red.png");
