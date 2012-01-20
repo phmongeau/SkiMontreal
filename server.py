@@ -3,8 +3,6 @@ from flask import Flask, url_for, redirect
 
 app = Flask(__name__)
 
-#locations = open("locations.json").read()
-
 @app.route("/", methods=['GET'])
 def get_map():
 
