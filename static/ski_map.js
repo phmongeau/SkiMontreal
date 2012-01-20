@@ -2,8 +2,9 @@ var locations, infoWindows;
 
 $(document).ready(function(){
 	infoWindows = [];
-	$.getJSON("ski_coords.json", function(data){
+	$.getJSON("ski_conditions.json", function(data){
 		locations = data;
+		$("#update").html(locations.updated);
 		getLocation();
 	});
 });

@@ -27,15 +27,18 @@ if __name__ == '__main__':
         file = codecs.getreader("utf-8")(f).read()
         addresses = json.loads(file)
 
-    locations = get_conditions()
+    #locations = get_conditions()
 
+    locations = {}
     for track in addresses:
         name, address = track.values()
         lat, lng = get_coords(address)
 
-        locations[name]["latitude"] = lat
-        locations[name]["longitude"] = lng
+        #locations[name]["latitude"] = lat
+        #locations[name]["longitude"] = lng
+        track["latitude"] = lat
+        track["longitude"] = lng
 
-    with open("static/ski_coords.json", "w") as file:
-        out =  json.dumps(locations, indent=4, sort_keys=True, ensure_ascii=False)
+    with open("ski_coords.json", "w") as file:
+        out =  json.dumps(addresses, indent=4, sort_keys=True, ensure_ascii=False)
         file.write(out.encode("utf8"))
