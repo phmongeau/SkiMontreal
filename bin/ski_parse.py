@@ -26,7 +26,19 @@ def get_conditions():
               }
         out["arrondissement"] = arrondissement
         j_pistes[out["name"]] = out
-    return j_pistes
+
+    with open("bin/ski_coords.json", "r") as file:
+        coords = json.loads(file.read())
+
+    for track in coords:
+        lat = track["latitude"]
+        lng = track["longitude"]
+        j_pistes[track["name"]]["latitude"] = lat
+        j_pistes[track["name"]]["longitude"] = lng
+
+    #return j_pistes
+    j_pistes["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+    return json.dumps(j_pistes, indent=4, sort_keys=True, ensure_ascii=False)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@ var locations, infoWindows;
 
 $(document).ready(function(){
 	infoWindows = [];
-	$.getJSON("ski_conditions.json", function(data){
+	$.getJSON("/conditions.json", function(data){
 		locations = data;
 		$("#update").html(locations.updated);
 		getLocation();
