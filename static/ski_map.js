@@ -2,7 +2,7 @@ var locations, infoWindows, icons;
 
 $(document).ready(function(){
 	infoWindows = [];
-	
+
 	var size = new OpenLayers.Size(32,37);
 	icons = {
 		blue: new OpenLayers.Icon('ski_blue.png', size),
@@ -10,9 +10,9 @@ $(document).ready(function(){
 		grey: new OpenLayers.Icon('ski_grey.png', size),
 	};
 
-
-	$.getJSON("ski_coords.json", function(data){
+	$.getJSON("/conditions.json", function(data){
 		locations = data;
+		$("#update").html(locations.updated);
 		getLocation();
 	});
 });
@@ -89,37 +89,36 @@ function createMarker(markerLoc, track)
 
 	if (track.open == "null" || track.open == "0" || !track.open)
 		marker.icon = icons.grey.clone();
-	else if (track.condition == "Bonne" || track.condition == "Excellante")
+	else if (track.condition == "Bonne" || track.condition == "Excellente")
 		marker.icon = icons.blue.clone();
 	else
 		marker.icon = icons.red.clone();
 	
 	return marker;
+	//contentText =   ""
+				  //+ "<div>"
+				  //+ "<h2>" + track.name + "</h2>"
+				  //+ "<br>"
+				  //+ "conditions: " + track.condition
+				  //+ "<br>"
+				  //+ "ouvert: " + track.open
+				  //+ "<br>"
+				  //+ "deblay&eacute;: " + track.deblaye;
+				  //+ "</div>";
 
-		contentText =   ""
-					  + "<div>"
-					  + "<h2>" + track.name + "</h2>"
-					  + "<br>"
-					  + "conditions: " + track.condition
-					  + "<br>"
-					  + "ouvert: " + track.open
-					  + "<br>"
-					  + "deblay&eacute;: " + track.deblaye;
-					  + "</div>";
+	//var info = new google.maps.InfoWindow({
+			//content: contentText,
+			//maxWidth: 400
+	//});
 
-		var info = new google.maps.InfoWindow({
-				content: contentText,
-				maxWidth: 400
-		});
+	//infoWindows.push(info);
 
-		infoWindows.push(info);
-
-		google.maps.event.addListener(marker, 'click', function() {
-			for (var i in infoWindows)
-			{
-				infoWindows[i].close();
-			}
-			info.open(map, marker);
-		});
+	//google.maps.event.addListener(marker, 'click', function() {
+		//for (var i in infoWindows)
+		//{
+			//infoWindows[i].close();
+		//}
+		//info.open(map, marker);
+	//});
 	
 }
