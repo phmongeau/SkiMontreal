@@ -3,17 +3,19 @@
 <head>
 	<meta charset="UTF-8">
 	<title></title>
-	<script type="text/javascript"
-		src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	<!--<script type="text/javascript"-->
+		<!--src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
+	<script src="http://openlayers.org/api/OpenLayers.js" type="text/javascript"></script>
+	<script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js" type="text/javascript"></script>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="ski_map.js" type="text/javascript"></script>
 	<style type="text/css">
 		#map {
 			width: 900px;
 			height: 600px;
-			margin: 0 auto;
 		}
-		#info, #logo {
+		#info, #logo, #center {
 			width: 900px;
 			margin: 0 auto;
 		}
@@ -22,7 +24,9 @@
 </head>
 <body>
 	<h1 id="logo">Ski Montreal</h1>
-	<div id="map">
+	<div id="center">
+		<div id="map">
+		</div>
 	</div>
 
 	<div id="info">

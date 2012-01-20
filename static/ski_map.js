@@ -1,7 +1,16 @@
-var locations, infoWindows;
+var locations, infoWindows, icons;
 
 $(document).ready(function(){
 	infoWindows = [];
+	
+	var size = new OpenLayers.Size(32,37);
+	icons = {
+		blue: new OpenLayers.Icon('ski_blue.png', size),
+		red:  new OpenLayers.Icon('ski_red.png', size),
+		grey: new OpenLayers.Icon('ski_grey.png', size),
+	};
+
+
 	$.getJSON("ski_coords.json", function(data){
 		locations = data;
 		getLocation();
@@ -10,73 +19,82 @@ $(document).ready(function(){
 
 function getLocation()
 {
-	var latlng;
-	//if (navigator.geolocation)
-	//{
-		//navigator.geolocation.getCurrentPosition(
-			//function(position) {
-				//latlng = new google.maps.LatLng(
-					//position.coords.latitude,
-					//position.coords.longitude);
-				//createMap(latlng);
-			//},
-			//function(position) {
-				//latlng = new google.maps.LatLng("45.50866990", "-73.55399249999999");
-				//createMap(latlng);
-			//}
-		//);
-	//}
-	//else
-	//{
-		//latlng = new google.maps.LatLng("45.50866990", "-73.55399249999999");
-		//createMap(latlng);
-	//}
-	latlng = new google.maps.LatLng("45.530079", "-73.631354");
-	createMap(latlng);
+	var lat = 45.530079, long = -73.631354;
+	//var latlng = OpenLayers.LonLat(-73.631354, 45.530079);
+	//console.log(latlng);
+	createMap(long, lat);
 }
 
-function createMap(latlng)
+function createMap(long, lat)
 {
-	var opts = {
-		zoom: 11,
-		center: latlng,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
-	};
+	var zoom=11;
 
-	var map = new google.maps.Map(
-			document.getElementById("map"), opts);
+	map = new OpenLayers.Map('map', {
+		panDuration: 200,
+		controls: [
+			new OpenLayers.Control.PanZoomBar(),
+			new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}}),
+			new OpenLayers.Control.KeyboardDefaults()
+		]
+	}); 
+
+
+	//Layers
+	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+	map.addLayer(layerMapnik);
+	
+
+	map.proj = new OpenLayers.Projection("EPSG:4326");
+	var lonLat = new OpenLayers.LonLat(long, lat);
+	lonLat.transform(map.proj, map.getProjectionObject());
+
+	map.setCenter(lonLat, zoom);
 
 	addMarkers(locations, map);
 }
 
 function addMarkers(locations, map)
 {
+	var markers = new OpenLayers.Layer.Markers("Markers");
+	map.addLayer(markers);
+
+	var icon = new OpenLayers.Icon('ski_blue.png', new OpenLayers.Size(32, 37));
+
 	for(var i in locations)
 	{
 		loc = locations[i];
 
-		var markerLoc = new google.maps.LatLng(
-				loc.latitude,
-				loc.longitude);
-		addMarker(markerLoc, map, loc);
+		var icon = new OpenLayers.Icon('ski_blue.png', new OpenLayers.Size(32, 37));
+		var icon = icons.blue.clone();
+
+		var markerLoc = new OpenLayers.LonLat(loc.longitude, loc.latitude);
+		markerLoc.transform(map.proj, map.getProjectionObject());
+
+		//var marker = new OpenLayers.Marker(markerLoc, icon);
+		//markers.addMarker(marker);
+		
+		markers.addMarker(createMarker(markerLoc, loc));
+
+		//var markerLoc = new google.maps.LatLng(
+				//loc.latitude,
+				//loc.longitude);
+		//addMarker(markerLoc, map, loc);
 
 	}
 }
 
-function addMarker(latlng, map, track)
+function createMarker(markerLoc, track)
 {
-		var marker = new google.maps.Marker({
-			position: latlng,
-			map: map,
-			title: track.name
-		});
+	marker = new OpenLayers.Marker(markerLoc);
 
-		if (track.open == "null" || track.open == "0" || !track.open)
-			marker.setIcon("ski_grey.png");
-		else if (track.condition == "Bonne")
-			marker.setIcon("ski_blue.png");
-		else
-			marker.setIcon("ski_red.png");
+	if (track.open == "null" || track.open == "0" || !track.open)
+		marker.icon = icons.grey.clone();
+	else if (track.condition == "Bonne" || track.condition == "Excellante")
+		marker.icon = icons.blue.clone();
+	else
+		marker.icon = icons.red.clone();
+	
+	return marker;
 
 		contentText =   ""
 					  + "<div>"
