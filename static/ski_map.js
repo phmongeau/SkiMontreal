@@ -1,4 +1,4 @@
-var locations, infoWindows, icons, markers, features;
+var locations, infoWindows, icons, markers, features, map;
 
 AutoSizeAnchored = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
 	'autoSize': true
@@ -19,18 +19,17 @@ $(document).ready(function(){
 	$.getJSON("/conditions.json", function(data){
 		locations = data;
 		$("#update").html(locations.updated);
-		getLocation();
+		//getLocation();
+		addMarkers(locations, map);
 	});
+	map = createMap();
 });
 
-function getLocation()
-{
-	var lat = 45.530079, long = -73.631354;
-	createMap(long, lat);
-}
 
 function createMap(long, lat)
 {
+	var map;
+	var lat = 45.530079, long = -73.631354;
 	var zoom=11;
 
 	map = new OpenLayers.Map('map', {
@@ -54,7 +53,9 @@ function createMap(long, lat)
 	markers = new OpenLayers.Layer.Markers("Markers");
 	map.addLayer(markers);
 
-	addMarkers(locations, map);
+	return map
+
+	//addMarkers(locations, map);
 }
 
 function addMarkers(locations, map)
