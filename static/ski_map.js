@@ -66,7 +66,8 @@ function addMarkers(locations, map)
 		var markerLoc = new OpenLayers.LonLat(loc.longitude, loc.latitude);
 		markerLoc.transform(map.proj, map.getProjectionObject());
 
-		addMarker(loc, markerLoc, AutoSizeAnchored, 'test', true);
+		if(loc.name)
+			addMarker(loc, markerLoc, AutoSizeAnchored, 'test', true);
 
 	}
 
@@ -94,7 +95,9 @@ function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) 
 					   + "<br>"
 					   + "ouvert: " + track.open
 					   + "<br>"
-					   + "deblay&eacute;: " + track.deblaye;
+					   + "deblay&eacute;: " + track.deblaye
+					   + "<br>"
+					   + "mise &agrave; jour: " + track["arrondissement"].date_maj
 					   + "</div>";
 	feature.data.popupContentHTML = popupContentHTML;
 
