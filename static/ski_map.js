@@ -1,7 +1,13 @@
-var locations, infoWindows, icons;
+var locations, infoWindows, icons, markers, features;
+
+AutoSizeAnchored = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
+	'autoSize': true
+});
+
 
 $(document).ready(function(){
 	infoWindows = [];
+	features = [];
 
 	var size = new OpenLayers.Size(32,37);
 	icons = {
@@ -20,8 +26,6 @@ $(document).ready(function(){
 function getLocation()
 {
 	var lat = 45.530079, long = -73.631354;
-	//var latlng = OpenLayers.LonLat(-73.631354, 45.530079);
-	//console.log(latlng);
 	createMap(long, lat);
 }
 
@@ -38,87 +42,79 @@ function createMap(long, lat)
 		]
 	}); 
 
-
-	//Layers
-	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+	layerMapnik = new OpenLayers.Layer.OSM("OSM");
 	map.addLayer(layerMapnik);
-	
 
 	map.proj = new OpenLayers.Projection("EPSG:4326");
+
 	var lonLat = new OpenLayers.LonLat(long, lat);
 	lonLat.transform(map.proj, map.getProjectionObject());
-
 	map.setCenter(lonLat, zoom);
+
+	markers = new OpenLayers.Layer.Markers("Markers");
+	map.addLayer(markers);
 
 	addMarkers(locations, map);
 }
 
 function addMarkers(locations, map)
 {
-	var markers = new OpenLayers.Layer.Markers("Markers");
-	map.addLayer(markers);
-
-	var icon = new OpenLayers.Icon('ski_blue.png', new OpenLayers.Size(32, 37));
-
 	for(var i in locations)
 	{
 		loc = locations[i];
 
-		var icon = new OpenLayers.Icon('ski_blue.png', new OpenLayers.Size(32, 37));
-		var icon = icons.blue.clone();
-
 		var markerLoc = new OpenLayers.LonLat(loc.longitude, loc.latitude);
 		markerLoc.transform(map.proj, map.getProjectionObject());
 
-		//var marker = new OpenLayers.Marker(markerLoc, icon);
-		//markers.addMarker(marker);
-		
-		markers.addMarker(createMarker(markerLoc, loc));
-
-		//var markerLoc = new google.maps.LatLng(
-				//loc.latitude,
-				//loc.longitude);
-		//addMarker(markerLoc, map, loc);
+		addMarker(loc, markerLoc, AutoSizeAnchored, 'test', true);
 
 	}
+
 }
 
-function createMarker(markerLoc, track)
-{
-	marker = new OpenLayers.Marker(markerLoc);
+function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) {
+	var feature = new OpenLayers.Feature(markers, ll);
+	feature.closeBox = closeBox;
+	feature.popupClass = popupClass;
+	//feature.data.popupContentHTML = popupContentHTML;
+	feature.data.overflow = (overflow) ? "auto" : "hidden";
 
 	if (track.open == "null" || track.open == "0" || !track.open)
-		marker.icon = icons.grey.clone();
+		feature.data.icon = icons.grey.clone();
 	else if (track.condition == "Bonne" || track.condition == "Excellente")
-		marker.icon = icons.blue.clone();
+		feature.data.icon = icons.blue.clone();
 	else
-		marker.icon = icons.red.clone();
-	
-	return marker;
-	//contentText =   ""
-				  //+ "<div>"
-				  //+ "<h2>" + track.name + "</h2>"
-				  //+ "<br>"
-				  //+ "conditions: " + track.condition
-				  //+ "<br>"
-				  //+ "ouvert: " + track.open
-				  //+ "<br>"
-				  //+ "deblay&eacute;: " + track.deblaye;
-				  //+ "</div>";
+		feature.data.icon = icons.red.clone();
 
-	//var info = new google.maps.InfoWindow({
-			//content: contentText,
-			//maxWidth: 400
-	//});
+	popupContentHTML =   ""
+					   + "<div>"
+					   + "<h2>" + track.name + "</h2>"
+					   + "<br>"
+					   + "conditions: " + track.condition
+					   + "<br>"
+					   + "ouvert: " + track.open
+					   + "<br>"
+					   + "deblay&eacute;: " + track.deblaye;
+					   + "</div>";
+	feature.data.popupContentHTML = popupContentHTML;
 
-	//infoWindows.push(info);
+	marker = feature.createMarker();
+	//marker.icon = icons.blue.clone();
 
-	//google.maps.event.addListener(marker, 'click', function() {
-		//for (var i in infoWindows)
-		//{
-			//infoWindows[i].close();
-		//}
-		//info.open(map, marker);
-	//});
-	
+	var markerClick = function (evt) {
+		features.forEach(function(f){ if(f.popup) f.popup.hide();});
+		if(this.popup == null) {
+			this.popup = this.createPopup(this.closeBox);
+			map.addPopup(this.popup);
+			this.popup.show();
+		} else {
+			this.popup.toggle();
+		}
+		currentPopup = this.popup;
+		OpenLayers.Event.stop(evt);
+	};
+	marker.events.register("mousedown", feature, markerClick);
+
+	features.push(feature);
+	markers.addMarker(marker);
 }
