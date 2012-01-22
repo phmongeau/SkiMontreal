@@ -29,6 +29,22 @@ $(document).ready(function(){
 		addMarkers(locations, map);
 	});
 	map = createMap();
+	
+	$("#skiToggle").click(function() {
+		ski_markers.setVisibility(!ski_markers.getVisibility());
+		if(ski_markers.getVisibility())
+			$("#skiToggle img").attr('src', '/static/button_ski_blue.png');
+		else
+			$("#skiToggle img").attr('src', '/static/button_ski_grey.png');
+	});
+	$("#glisseToggle").click(function() {
+		glisse_markers.setVisibility(!glisse_markers.getVisibility());
+		if(glisse_markers.getVisibility())
+			$("#glisseToggle img").attr('src', '/static/button_glisse_blue.png');
+		else
+			$("#glisseToggle img").attr('src', '/static/button_glisse_grey.png');
+	});
+
 });
 
 
