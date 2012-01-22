@@ -10,15 +10,16 @@ $(document).ready(function(){
 	features = [];
 
 	var size = new OpenLayers.Size(32,37);
+	var offset = new OpenLayers.Pixel(0,-37);
 	ski_icons = {
-		blue: new OpenLayers.Icon('ski_blue.png', size),
-		red:  new OpenLayers.Icon('ski_red.png', size),
-		grey: new OpenLayers.Icon('ski_grey.png', size),
+		blue: new OpenLayers.Icon('ski_blue.png', size, offset),
+		red:  new OpenLayers.Icon('ski_red.png', size, offset),
+		grey: new OpenLayers.Icon('ski_grey.png', size, offset),
 	};
 	glisse_icons = {
-		blue: new OpenLayers.Icon('glisse_blue.png', size),
-		red:  new OpenLayers.Icon('glisse_red.png', size),
-		grey: new OpenLayers.Icon('glisse_grey.png', size),
+		blue: new OpenLayers.Icon('glisse_blue.png', size, offset),
+		red:  new OpenLayers.Icon('glisse_red.png', size, offset),
+		grey: new OpenLayers.Icon('glisse_grey.png', size, offset),
 	};
 
 	$.getJSON("/conditions.json", function(data){
