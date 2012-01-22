@@ -1,0 +1,184 @@
+[
+    {
+        "address": " 10555, rue Lajeunesse", 
+        "latitude": 45.5542953, 
+        "longitude": -73.664775, 
+        "name": "Aire de glissade, Ahuntsic",
+		"has_data": true
+    }, 
+    {
+        "address": " 2574, rue Fleury Est", 
+        "latitude": 45.5782082, 
+        "longitude": -73.6452226, 
+        "name": "Aire de glissade, Des Hirondelles",
+		"has_data": true
+    }, 
+    {
+        "address": " 32e avenue and rue Provost", 
+        "latitude": 45.4419026, 
+        "longitude": -73.6925455, 
+        "name": "Parc Groverhill"
+    }, 
+    {
+        "address": " 8600, rue Hardy", 
+        "latitude": 45.4331612, 
+        "longitude": -73.6357811, 
+        "name": "Parc Lefebvre"
+    }, 
+    {
+        "address": " 555, boulevard Bishop-Power", 
+        "latitude": 45.4273483, 
+        "longitude": -73.6001332, 
+        "name": "Parc Raymond"
+    }, 
+    {
+        "address": " 3333, avenue Newman", 
+        "latitude": 45.455595, 
+        "longitude": -73.6028371, 
+        "name": "Aire de glissade, Ignace-Bourget",
+		"has_data": true
+    }, 
+    {
+        "address": " 470, rue Fortune", 
+        "latitude": 45.4777729, 
+        "longitude": -73.5557035, 
+        "name": "Aire de glissade, Le Ber",
+		"has_data": true
+    }, 
+    {
+        "address": " rue Cabrini au nord du boulevard Rosemont", 
+        "latitude": 45.5809892, 
+        "longitude": -73.5648865, 
+        "name": "Aire de glissade, Francesca-Cabrini",
+		"has_data": true
+    }, 
+    {
+        "address": " 2150, rue Liébert", 
+        "latitude": 45.5944171, 
+        "longitude": -73.5180556, 
+        "name": "Aire de glissade, De la Bruère",
+		"has_data": true
+    }, 
+    {
+        "address": " 850, avenue Pierre-De Coubertin ", 
+        "latitude": 45.5679099,
+		"longitude": -73.5429946,
+        "name": "Aire de glissade, Liébert",
+		"has_data": true
+    }, 
+    {
+        "address": " 4370, rue Sainte-Catherine Est ", 
+        "latitude": 45.5511067, 
+        "longitude": -73.5339043, 
+        "name": "Aire de glissade, Morgan",
+		"has_data": true
+    }, 
+    {
+        "address": " 11135, avenue des Récollets ", 
+        "latitude": 45.5922828, 
+        "longitude": -73.64208390000002, 
+        "name": "Parc Pilon"
+    }, 
+    {
+        "address": " chemin de la Côte-Sainte-Catherine and avenue McEachran", 
+        "latitude": 45.5146841, 
+        "longitude": -73.6089367, 
+        "name": "Glissade, Parc Beaubien"
+    }, 
+    {
+        "address": " 14899, rue Oakwood", 
+        "latitude": 45.47488509999999, 
+        "longitude": -73.8557692, 
+        "name": "Parc Alexander"
+    }, 
+    {
+        "address": " 17760, rue Meloche", 
+        "latitude": 45.4584215, 
+        "longitude": -73.8843486, 
+        "name": "Parc Grier"
+    }, 
+    {
+        "address": " 1050, boulevard Saint-Jean-Baptiste, PAT", 
+        "latitude": 46.3609458, 
+        "longitude": -72.5166169, 
+        "name": "Parc Saint-Jean-Baptiste"
+    }, 
+    {
+        "address": " 6525, rue Beaubien and 41e Avenue ", 
+        "latitude": 45.5735949, 
+        "longitude": -73.57012850000001, 
+        "name": "Aire de glissade, Joseph-Paré",
+		"has_data": true
+    }, 
+    {
+        "address": " 2590, rue Masson and 1re Avenue ", 
+        "latitude": 45.5453011, 
+        "longitude": -73.5765828, 
+        "name": "Aire de glissade, Du Pélican",
+		"has_data": true
+    }, 
+    {
+        "address": " 1505, rue Cardinal", 
+        "latitude": 45.5160456, 
+        "longitude": -73.6901221, 
+        "name": "Parc Hartenstein"
+    }, 
+    {
+        "address": " 4755, rue Valéry", 
+        "latitude": 45.5834132, 
+        "longitude": -73.6089045, 
+        "name": "Aire de glissade, parc Coubertin",
+		"has_data": true
+    }, 
+    {
+        "address": " 6060, rue Honfleur", 
+        "latitude": 45.5932872, 
+        "longitude": -73.5909368, 
+        "name": "Aire de glissade, parc Delorme",
+		"has_data": true
+    }, 
+    {
+        "address": "7125, rue Liénard, Montreal", 
+        "latitude": 45.5863172,
+        "longitude": -73.5701127, 
+        "name": "Aire de glissade, parc Garibaldi",
+		"has_data": true
+    }, 
+    {
+        "address": " 2000, chemin Remembrance ", 
+        "latitude": 45.4981655, 
+        "longitude": -73.5991287, 
+        "name": "Aire de glissade, Mont-Royal",
+		"has_data": true
+    }, 
+    {
+        "address": " île Sainte-Hélène ", 
+        "latitude": 45.5189876, 
+        "longitude": -73.5341937, 
+        "name": "Parc Jean Drapeau"
+    }, 
+    {
+        "address": " 14905, rue Sherbrooke Est , 514 280-6691", 
+        "latitude": 45.6811101, 
+        "longitude": -73.5009613, 
+        "name": "Parc-nature de la Pointe-aux-prairies"
+    }, 
+    {
+        "address": "3555, rue Douglas-B.-Floreani", 
+        "latitude": 45.4994352, 
+        "longitude": -73.7677118, 
+        "name": "Parc-nature du Bois-de-Liesse accueil des champs"
+    }, 
+    {
+        "address": " 2938, chemin Lake", 
+        "latitude": 46.17819919999999, 
+        "longitude": -74.51912759999999, 
+        "name": "Parc du Centenaire"
+    }, 
+    {
+        "address": " 531, avenue Westminster", 
+        "latitude": 37.9698429, 
+        "longitude": -98.19913880000001, 
+        "name": "Parc Westminster"
+    }
+]

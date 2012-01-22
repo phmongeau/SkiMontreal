@@ -1,4 +1,4 @@
-var locations, infoWindows, icons, markers, features, map;
+var locations, infoWindows, icons, ski_markers, glisse_markers, features, map;
 
 AutoSizeAnchored = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
 	'autoSize': true
@@ -10,10 +10,15 @@ $(document).ready(function(){
 	features = [];
 
 	var size = new OpenLayers.Size(32,37);
-	icons = {
+	ski_icons = {
 		blue: new OpenLayers.Icon('ski_blue.png', size),
 		red:  new OpenLayers.Icon('ski_red.png', size),
 		grey: new OpenLayers.Icon('ski_grey.png', size),
+	};
+	glisse_icons = {
+		blue: new OpenLayers.Icon('glisse_blue.png', size),
+		red:  new OpenLayers.Icon('glisse_red.png', size),
+		grey: new OpenLayers.Icon('glisse_grey.png', size),
 	};
 
 	$.getJSON("/conditions.json", function(data){
@@ -36,6 +41,7 @@ function createMap(long, lat)
 		panDuration: 200,
 		controls: [
 			new OpenLayers.Control.PanZoomBar(),
+			new OpenLayers.Control.LayerSwitcher(),
 			new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}}),
 			new OpenLayers.Control.KeyboardDefaults()
 		]
@@ -50,8 +56,11 @@ function createMap(long, lat)
 	lonLat.transform(map.proj, map.getProjectionObject());
 	map.setCenter(lonLat, zoom);
 
-	markers = new OpenLayers.Layer.Markers("Markers");
-	map.addLayer(markers);
+	ski_markers = new OpenLayers.Layer.Markers("Ski");
+	map.addLayer(ski_markers);
+
+	glisse_markers = new OpenLayers.Layer.Markers("Glisse");
+	map.addLayer(glisse_markers);
 
 	return map
 
@@ -75,18 +84,33 @@ function addMarkers(locations, map)
 }
 
 function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) {
-	var feature = new OpenLayers.Feature(markers, ll);
+	if(track.type == "ski")
+		var feature = new OpenLayers.Feature(ski_markers, ll);
+	else
+		var feature = new OpenLayers.Feature(glisse_markers, ll);
 	feature.closeBox = closeBox;
 	feature.popupClass = popupClass;
 	//feature.data.popupContentHTML = popupContentHTML;
 	feature.data.overflow = (overflow) ? "auto" : "hidden";
 
-	if (track.open == "null" || track.open == "0" || !track.open)
-		feature.data.icon = icons.grey.clone();
-	else if (track.condition == "Bonne" || track.condition == "Excellente")
-		feature.data.icon = icons.blue.clone();
+	if(track.type == "ski")
+	{
+		if (track.open == "null" || track.open == "0" || !track.open)
+			feature.data.icon = ski_icons.grey.clone();
+		else if (track.condition == "Bonne" || track.condition == "Excellente")
+			feature.data.icon = ski_icons.blue.clone();
+		else
+			feature.data.icon = ski_icons.red.clone();
+	}
 	else
-		feature.data.icon = icons.red.clone();
+	{
+		if (track.open == "null" || track.open == "0" || !track.open)
+			feature.data.icon = glisse_icons.grey.clone();
+		else if (track.condition == "Bonne" || track.condition == "Excellente")
+			feature.data.icon = glisse_icons.blue.clone();
+		else
+			feature.data.icon = glisse_icons.red.clone();
+	}
 
 	popupContentHTML =   ""
 					   + "<div>"
@@ -120,5 +144,8 @@ function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) 
 	marker.events.register("mousedown", feature, markerClick);
 
 	features.push(feature);
-	markers.addMarker(marker);
+	if(track.type == "ski")
+		ski_markers.addMarker(marker);
+	else
+		glisse_markers.addMarker(marker);
 }

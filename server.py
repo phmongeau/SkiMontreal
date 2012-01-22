@@ -13,10 +13,13 @@ def get_map():
 
 @app.route("/conditions.json", methods=['GET'])
 def get_conditions():
-    return get_conditions()
+    cond = dict()
+    cond.update(get_ski_conditions())
+    cond.update(get_glisse_conditions())
+    return json.dumps(cond, indent=4, sort_keys=True, ensure_ascii=False)
 
 
-def get_conditions():
+def get_ski_conditions():
     url = "http://depot.ville.montreal.qc.ca/conditions-ski/data.xml"
     document = urlopen(url).read()
 
@@ -31,6 +34,7 @@ def get_conditions():
         out["open"] = piste.find("ouvert").text
         out["condition"] = piste.find("condition").text
         out["deblaye"] = piste.find("deblaye").text
+        out["type"] = "ski"
         arr = piste.find("arrondissement")
         arrondissement = {
                 "name": arr.find("nom_arr").text,
@@ -46,12 +50,55 @@ def get_conditions():
     for track in coords:
         lat = track["latitude"]
         lng = track["longitude"]
-        j_pistes[track["name"]]["latitude"] = lat
-        j_pistes[track["name"]]["longitude"] = lng
+        if j_pistes.has_key(track["name"]):
+            j_pistes[track["name"]]["latitude"] = lat
+            j_pistes[track["name"]]["longitude"] = lng
 
     #return j_pistes
     j_pistes["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
-    return json.dumps(j_pistes, indent=4, sort_keys=True, ensure_ascii=False)
+    return j_pistes
+    #return json.dumps(j_pistes, indent=4, sort_keys=True, ensure_ascii=False)
+
+
+def get_glisse_conditions():
+    url = "http://depot.ville.montreal.qc.ca/sites-hiver/data.xml"
+    document = urlopen(url).read()
+
+    tree = etree.parse(url)
+    root = tree.getroot()
+    pistes = root.findall('glissade')
+
+    j_pistes = {}
+    for piste in pistes:
+        out = {}
+        out["name"] = piste.find('nom').text
+        out["open"] = piste.find("ouvert").text
+        out["condition"] = piste.find("condition").text
+        out["deblaye"] = piste.find("deblaye").text
+        out["type"] = "glissade"
+        arr = piste.find("arrondissement")
+        arrondissement = {
+                "name": arr.find("nom_arr").text,
+                "cle": arr.find("cle").text,
+                "date_maj": arr.find("date_maj").text
+              }
+        out["arrondissement"] = arrondissement
+        j_pistes[out["name"]] = out
+
+    with open("bin/glisse_coords.json", "r") as file:
+        coords = json.loads(file.read())
+
+    for track in coords:
+        lat = track["latitude"]
+        lng = track["longitude"]
+        if j_pistes.has_key(track["name"]):
+            j_pistes[track["name"]]["latitude"] = lat
+            j_pistes[track["name"]]["longitude"] = lng
+
+    #return j_pistes
+    j_pistes["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+    return j_pistes
+    #return json.dumps(j_pistes, indent=4, sort_keys=True, ensure_ascii=False)
 
 
 if __name__ == '__main__':
