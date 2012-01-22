@@ -9,6 +9,7 @@ $(document).ready(function(){
 	infoWindows = [];
 	features = [];
 
+	//Icons
 	var size = new OpenLayers.Size(32,37);
 	var offset = new OpenLayers.Pixel(0,-37);
 	ski_icons = {
@@ -22,14 +23,16 @@ $(document).ready(function(){
 		grey: new OpenLayers.Icon('glisse_grey.png', size, offset),
 	};
 
+	// Get JSON
 	$.getJSON("/conditions.json", function(data){
 		locations = data;
 		$("#update").html(locations.updated);
-		//getLocation();
 		addMarkers(locations, map);
+		loadPistes();
 	});
 	map = createMap();
 	
+	// Toggle Buttons
 	$("#skiToggle").click(function() {
 		ski_markers.setVisibility(!ski_markers.getVisibility());
 		if(ski_markers.getVisibility())
@@ -165,4 +168,47 @@ function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) 
 		ski_markers.addMarker(marker);
 	else
 		glisse_markers.addMarker(marker);
+}
+
+function loadPistes()
+{
+	files = [
+		//'/static/gps/2011-02-06 1152.gpx',
+		//'/static/gps/2010-12-30 1429.gpx'
+	];
+
+	for (var i in files)
+	{
+		url = files[i];
+		addGPX(url, i);
+	}
+}
+
+
+function addGPX(file_url, index, color)
+{
+	if (color == null || color == undefined)
+	{
+		color = "blue";
+	}
+	var lgpx = new OpenLayers.Layer.Vector("Piste: " + index, {
+		style: {strokeColor: color, strokeWidth: 2, strokeOpacity: 0.5},
+		projection: map.proj,
+		strategies: [new OpenLayers.Strategy.Fixed()],
+		protocol: new OpenLayers.Protocol.HTTP({
+			url: file_url,
+			format: new OpenLayers.Format.GPX({
+				extractAttributes: true,
+				extractStyles: false,
+				maxDepth: 4,
+				extractTracks: true,
+				extractRoutes: false,
+				extractWaypoints: false
+			})
+		})
+	});
+
+	lgpx.setZIndex(325);
+
+	map.addLayer(lgpx);
 }
