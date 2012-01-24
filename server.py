@@ -1,12 +1,14 @@
 import os
 import json
-from flask import Flask, url_for, redirect
-from datetime import datetime
-#from urllib2 import urlopen
 import requests
+from datetime import datetime
+from flask import Flask, url_for, redirect
 from lxml import etree
+from werkzeug.contrib.cache import SimpleCache
 
 app = Flask(__name__)
+
+cache = SimpleCache()
 
 @app.route("/", methods=['GET'])
 def get_map():
@@ -14,29 +16,51 @@ def get_map():
 
 @app.route("/conditions.json", methods=['GET'])
 def get_conditions():
-    cond = dict()
-    cond.update(get_ski_conditions())
-    cond.update(get_glisse_conditions())
+    # Try to get conditions from the cache
+    cond = cache.get('conditions')
+    if cond is None:
+        print "not in cache, getting latest conditions"
+        cond = dict()
+        
+        cond.update(get_ski_conditions())
+        cond.update(get_glisse_conditions())
+
+        # Cache conditions for 30 minutes
+        if not cond.has_key('ski_error') or not cond.has_key('glisse_error'):
+            cache.set('conditions', cond, timeout= 30 * 60)
+        else:
+            print "error getting conditions; not caching"
+    else:
+        print "using cache"
+
     return json.dumps(cond, indent=4, sort_keys=True, ensure_ascii=False)
 
 
-def get_ski_conditions():
-    url = "http://depot.ville.montreal.qc.ca/conditions-ski/data.xml"
+def getXML(url):
     try:
         r = requests.get(url, timeout=3)
-        document = r.text
+        document = r.content
     except requests.exceptions.Timeout:
         print 'ski_timeout'
-        return {'ski_error': 'timeout'}
+        return False
 
     try:
         tree = etree.fromstring(document)
     except etree.XMLSyntaxError:
         print 'ski: parse_error'
+        return False
+
+    return tree
+
+
+def get_ski_conditions():
+    url = "http://depot.ville.montreal.qc.ca/conditions-ski/data.xml"
+
+    tree = getXML(url)
+    if tree is False:
         return {'ski_error': 'could not parse'}
 
-    root = tree.getroot()
-    pistes = root.findall('piste')
+    pistes = tree.findall('piste')
 
     j_pistes = {}
     for piste in pistes:
@@ -65,33 +89,22 @@ def get_ski_conditions():
             j_pistes[track["name"]]["latitude"] = lat
             j_pistes[track["name"]]["longitude"] = lng
 
-    #return j_pistes
     j_pistes["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
     return j_pistes
-    #return json.dumps(j_pistes, indent=4, sort_keys=True, ensure_ascii=False)
 
 
 def get_glisse_conditions():
     url = "http://depot.ville.montreal.qc.ca/sites-hiver/data.xml"
 
-    try:
-        r = requests.get(url, timeout=3)
-        document = r.text
-    except requests.exceptions.Timeout:
-        print 'glisse_timeout'
-        return {'glisse_error': 'timeout'}
-
-    try:
-        tree = etree.fromstring(document)
-    except etree.XMLSyntaxError:
-        print 'ski: parse_error'
+    tree = getXML(url)
+    if tree is False:
         return {'glisse_error': 'could not parse'}
 
-    root = tree.getroot()
-    pistes = root.findall('glissade')
+    pistes = tree.findall('glissade')
 
     j_pistes = {}
     for piste in pistes:
+        print "piste", piste
         out = {}
         out["name"] = piste.find('nom').text
         out["open"] = piste.find("ouvert").text
@@ -107,20 +120,21 @@ def get_glisse_conditions():
         out["arrondissement"] = arrondissement
         j_pistes[out["name"]] = out
 
+
     with open("bin/glisse_coords.json", "r") as file:
         coords = json.loads(file.read())
 
     for track in coords:
         lat = track["latitude"]
         lng = track["longitude"]
+        #print track["name"], j_pistes.get(track["name"])
         if j_pistes.has_key(track["name"]):
+            print "has_key"
             j_pistes[track["name"]]["latitude"] = lat
             j_pistes[track["name"]]["longitude"] = lng
 
-    #return j_pistes
     j_pistes["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
     return j_pistes
-    #return json.dumps(j_pistes, indent=4, sort_keys=True, ensure_ascii=False)
 
 
 if __name__ == '__main__':
