@@ -2,7 +2,8 @@ import os
 import json
 from flask import Flask, url_for, redirect
 from datetime import datetime
-from urllib2 import urlopen
+#from urllib2 import urlopen
+import requests
 from lxml import etree
 
 app = Flask(__name__)
@@ -21,7 +22,12 @@ def get_conditions():
 
 def get_ski_conditions():
     url = "http://depot.ville.montreal.qc.ca/conditions-ski/data.xml"
-    document = urlopen(url).read()
+    #document = urlopen(url).read()
+    try:
+        requests.get(url, timeout=3)
+    except requests.exceptions.Timeout:
+        print 'ski_timeout'
+        return {'ski_error': 'timeout'}
 
     tree = etree.parse(url)
     root = tree.getroot()
@@ -62,7 +68,13 @@ def get_ski_conditions():
 
 def get_glisse_conditions():
     url = "http://depot.ville.montreal.qc.ca/sites-hiver/data.xml"
-    document = urlopen(url).read()
+    #document = urlopen(url,None,5).read()
+
+    try:
+        requests.get(url, timeout=3)
+    except requests.exceptions.Timeout:
+        print 'glisse_timeout'
+        return {'glisse_error': 'timeout'}
 
     tree = etree.parse(url)
     root = tree.getroot()
