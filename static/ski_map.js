@@ -150,13 +150,22 @@ function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) 
 	//marker.icon = icons.blue.clone();
 
 	var markerClick = function (evt) {
-		features.forEach(function(f){ if(f.popup) f.popup.hide();});
 		if(this.popup == null) {
+			features.forEach(function(f){ if(f.popup != null) f.popup.hide();});
 			this.popup = this.createPopup(this.closeBox);
 			map.addPopup(this.popup);
 			this.popup.show();
-		} else {
-			this.popup.toggle();
+		}
+		else
+		{
+			if(this.popup.visible()) {
+				return this.popup.hide();
+			}
+			else
+			{
+				features.forEach(function(f){ if(f.popup != null) f.popup.hide();});
+				this.popup.toggle();
+			}
 		}
 		currentPopup = this.popup;
 		OpenLayers.Event.stop(evt);
