@@ -1,12 +1,14 @@
 import os
 import json
-from flask import Flask, url_for, redirect
-from datetime import datetime
-#from urllib2 import urlopen
 import requests
+from datetime import datetime
+from flask import Flask, url_for, redirect
 from lxml import etree
+from werkzeug.contrib.cache import SimpleCache
 
 app = Flask(__name__)
+
+cache = SimpleCache()
 
 @app.route("/", methods=['GET'])
 def get_map():
@@ -14,9 +16,23 @@ def get_map():
 
 @app.route("/conditions.json", methods=['GET'])
 def get_conditions():
-    cond = dict()
-    cond.update(get_ski_conditions())
-    cond.update(get_glisse_conditions())
+    # Try to get conditions from the cache
+    cond = cache.get('conditions')
+    if cond is None:
+        print "not in cache, getting latest conditions"
+        cond = dict()
+        
+        cond.update(get_ski_conditions())
+        cond.update(get_glisse_conditions())
+
+        # Cache conditions for 30 minutes
+        if not cond.has_key('ski_error') or not cond.has_key('glisse_error'):
+            cache.set('conditions', cond, timeout= 30 * 60)
+        else:
+            print "error getting conditions; not caching"
+    else:
+        print "using cache"
+
     return json.dumps(cond, indent=4, sort_keys=True, ensure_ascii=False)
 
 
