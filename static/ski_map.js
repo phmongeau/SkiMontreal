@@ -89,6 +89,13 @@ function createMap(long, lat)
 
 function addMarkers(locations, map)
 {
+	if(locations.ski_error && locations.glisse_error)
+	{
+		console.log("can't load data");
+		console.log('ski: ' + locations.ski_error);
+		console.log('glisse' + locations.glisse_error);
+		return
+	}
 	for(var i in locations)
 	{
 		loc = locations[i];

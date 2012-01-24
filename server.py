@@ -22,14 +22,19 @@ def get_conditions():
 
 def get_ski_conditions():
     url = "http://depot.ville.montreal.qc.ca/conditions-ski/data.xml"
-    #document = urlopen(url).read()
     try:
-        requests.get(url, timeout=3)
+        r = requests.get(url, timeout=3)
+        document = r.text
     except requests.exceptions.Timeout:
         print 'ski_timeout'
         return {'ski_error': 'timeout'}
 
-    tree = etree.parse(url)
+    try:
+        tree = etree.fromstring(document)
+    except etree.XMLSyntaxError:
+        print 'ski: parse_error'
+        return {'ski_error': 'could not parse'}
+
     root = tree.getroot()
     pistes = root.findall('piste')
 
@@ -68,15 +73,20 @@ def get_ski_conditions():
 
 def get_glisse_conditions():
     url = "http://depot.ville.montreal.qc.ca/sites-hiver/data.xml"
-    #document = urlopen(url,None,5).read()
 
     try:
-        requests.get(url, timeout=3)
+        r = requests.get(url, timeout=3)
+        document = r.text
     except requests.exceptions.Timeout:
         print 'glisse_timeout'
         return {'glisse_error': 'timeout'}
 
-    tree = etree.parse(url)
+    try:
+        tree = etree.fromstring(document)
+    except etree.XMLSyntaxError:
+        print 'ski: parse_error'
+        return {'glisse_error': 'could not parse'}
+
     root = tree.getroot()
     pistes = root.findall('glissade')
 
