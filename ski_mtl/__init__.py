@@ -2,17 +2,44 @@ import os
 import json
 import requests
 from datetime import datetime
-from flask import Flask, url_for, redirect
+from flask import Flask, request, url_for, redirect, send_from_directory
 from lxml import etree
 from werkzeug.contrib.cache import SimpleCache
+from werkzeug import secure_filename
+
+from ski_mtl.database import db_session
 
 app = Flask(__name__)
 
 cache = SimpleCache()
 
+ALLOWED_EXTENSIONS = set(['gpx', 'kml'])
+app.config['UPLOAD_FOLDER'] = 'static/gps/'
+
+@app.teardown_request
+def shutdown_session(exception=None):
+    db_session.remove()
+
 @app.route("/", methods=['GET'])
 def get_map():
     return redirect(url_for('static', filename='index.html'))
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        print "received file"
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            print 'accepted', filename
+            print(file.read())
+            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return 'ok'
 
 @app.route("/conditions.json", methods=['GET'])
 def get_conditions():
@@ -79,7 +106,7 @@ def get_ski_conditions():
         out["arrondissement"] = arrondissement
         j_pistes[out["name"]] = out
 
-    with open("bin/ski_coords.json", "r") as file:
+    with open("ski_mtl/bin/ski_coords.json", "r") as file:
         coords = json.loads(file.read())
 
     for track in coords:
@@ -120,8 +147,7 @@ def get_glisse_conditions():
         out["arrondissement"] = arrondissement
         j_pistes[out["name"]] = out
 
-
-    with open("bin/glisse_coords.json", "r") as file:
+    with open("ski_mtl/bin/glisse_coords.json", "r") as file:
         coords = json.loads(file.read())
 
     for track in coords:
@@ -137,6 +163,6 @@ def get_glisse_conditions():
     return j_pistes
 
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+#if __name__ == '__main__':
+    #port = int(os.environ.get("PORT", 5000))
+    #app.run(host='0.0.0.0', port=port, debug=True)

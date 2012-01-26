@@ -1,9 +1,11 @@
 Flask==0.8
 Jinja2==2.6
+SQLAlchemy==0.7.4
 Werkzeug==0.8.2
 certifi==0.0.7
 chardet==1.0.1
 gunicorn==0.13.4
 lxml==2.3.3
+pysqlite==2.6.3
 requests==0.10.1
 wsgiref==0.1.2
