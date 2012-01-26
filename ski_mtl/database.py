@@ -3,7 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-DATABASE_URL = str(os.environ.get("SHARED_DATABASE_URL", 'sqlite:////tmp/test.db'))
+#DATABASE_URL = str(os.environ.get("SHARED_DATABASE_URL", 'sqlite:////tmp/test.db'))
+DATABASE_URL = str(os.environ.get('SHARED_DATABASE_URL'))
 
 engine = create_engine(DATABASE_URL, convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
