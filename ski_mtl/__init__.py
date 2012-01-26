@@ -2,17 +2,44 @@ import os
 import json
 import requests
 from datetime import datetime
-from flask import Flask, url_for, redirect
+from flask import Flask, request, url_for, redirect, send_from_directory
 from lxml import etree
 from werkzeug.contrib.cache import SimpleCache
+from werkzeug import secure_filename
+
+from ski_mtl.database import db_session
 
 app = Flask(__name__)
 
 cache = SimpleCache()
 
+ALLOWED_EXTENSIONS = set(['gpx', 'kml'])
+app.config['UPLOAD_FOLDER'] = 'static/gps/'
+
+@app.teardown_request
+def shutdown_session(exception=None):
+    db_session.remove()
+
 @app.route("/", methods=['GET'])
 def get_map():
     return redirect(url_for('static', filename='index.html'))
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        print "received file"
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            print 'accepted', filename
+            print(file.read())
+            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return 'ok'
 
 @app.route("/conditions.json", methods=['GET'])
 def get_conditions():
@@ -26,7 +53,7 @@ def get_conditions():
         cond.update(get_glisse_conditions())
 
         # Cache conditions for 30 minutes
-        if not cond.has_key('ski_error') or not cond.has_key('glisse_error'):
+        if not cond.has_key('ski_error') and not cond.has_key('glisse_error'):
             cache.set('conditions', cond, timeout= 30 * 60)
         else:
             print "error getting conditions; not caching"
@@ -36,23 +63,32 @@ def get_conditions():
     return json.dumps(cond, indent=4, sort_keys=True, ensure_ascii=False)
 
 
-def get_ski_conditions():
-    url = "http://depot.ville.montreal.qc.ca/conditions-ski/data.xml"
+def getXML(url):
     try:
         r = requests.get(url, timeout=3)
-        document = r.text
+        document = r.content
     except requests.exceptions.Timeout:
         print 'ski_timeout'
-        return {'ski_error': 'timeout'}
+        return False
 
     try:
         tree = etree.fromstring(document)
     except etree.XMLSyntaxError:
         print 'ski: parse_error'
+        return False
+
+    return tree
+
+
+def get_ski_conditions():
+    url = "http://depot.ville.montreal.qc.ca/conditions-ski/data.xml"
+
+    tree = getXML(url)
+    if not tree:
         return {'ski_error': 'could not parse'}
 
-    root = tree.getroot()
-    pistes = root.findall('piste')
+    #root = tree.getroot()
+    pistes = tree.findall('piste')
 
     j_pistes = {}
     for piste in pistes:
@@ -71,7 +107,7 @@ def get_ski_conditions():
         out["arrondissement"] = arrondissement
         j_pistes[out["name"]] = out
 
-    with open("bin/ski_coords.json", "r") as file:
+    with open("ski_mtl/bin/ski_coords.json", "r") as file:
         coords = json.loads(file.read())
 
     for track in coords:
@@ -90,21 +126,12 @@ def get_ski_conditions():
 def get_glisse_conditions():
     url = "http://depot.ville.montreal.qc.ca/sites-hiver/data.xml"
 
-    try:
-        r = requests.get(url, timeout=3)
-        document = r.text
-    except requests.exceptions.Timeout:
-        print 'glisse_timeout'
-        return {'glisse_error': 'timeout'}
-
-    try:
-        tree = etree.fromstring(document)
-    except etree.XMLSyntaxError:
-        print 'ski: parse_error'
+    tree = getXML(url)
+    if not tree:
         return {'glisse_error': 'could not parse'}
 
-    root = tree.getroot()
-    pistes = root.findall('glissade')
+    #root = tree.getroot()
+    pistes = tree.findall('glissade')
 
     j_pistes = {}
     for piste in pistes:
@@ -123,7 +150,7 @@ def get_glisse_conditions():
         out["arrondissement"] = arrondissement
         j_pistes[out["name"]] = out
 
-    with open("bin/glisse_coords.json", "r") as file:
+    with open("ski_mtl/bin/glisse_coords.json", "r") as file:
         coords = json.loads(file.read())
 
     for track in coords:
@@ -139,6 +166,6 @@ def get_glisse_conditions():
     #return json.dumps(j_pistes, indent=4, sort_keys=True, ensure_ascii=False)
 
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+#if __name__ == '__main__':
+    #port = int(os.environ.get("PORT", 5000))
+    #app.run(host='0.0.0.0', port=port, debug=True)
