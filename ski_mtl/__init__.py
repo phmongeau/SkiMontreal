@@ -6,10 +6,14 @@ from flask import Flask, request, url_for, redirect, send_from_directory
 from lxml import etree
 from werkzeug.contrib.cache import SimpleCache
 from werkzeug import secure_filename
+from flaskext.sqlalchemy import SQLAlchemy
 
-from ski_mtl.database import db_session
+#from ski_mtl.database import db_session
 
 app = Flask(__name__)
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+db = SQLAlchemy(app)
 
 cache = SimpleCache()
 

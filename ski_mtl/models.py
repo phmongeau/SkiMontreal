@@ -1,11 +1,12 @@
-from sqlalchemy import Column, Integer, String
-from ski_mtl.database import Base
+#from sqlalchemy import Column, Integer, String
+#from ski_mtl.database import Base
+from ski_mtl import db
 
-class Track(Base):
+class Track(db.Model):
     __tablename__ = 'tracks'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50), unique=True)
-    data = Column(String())
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+    data = db.Column(db.String())
 
     def __init__(self, name=None, data=None):
         self.name = name
