@@ -7,18 +7,12 @@ from lxml import etree
 from werkzeug.contrib.cache import SimpleCache
 from werkzeug import secure_filename
 
-from ski_mtl.database import db_session
-
 app = Flask(__name__)
 
 cache = SimpleCache()
 
 ALLOWED_EXTENSIONS = set(['gpx', 'kml'])
 app.config['UPLOAD_FOLDER'] = 'static/gps/'
-
-@app.teardown_request
-def shutdown_session(exception=None):
-    db_session.remove()
 
 @app.route("/", methods=['GET'])
 def get_map():
