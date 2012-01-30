@@ -14,6 +14,7 @@ cache = SimpleCache()
 ALLOWED_EXTENSIONS = set(['gpx', 'kml'])
 app.config['UPLOAD_FOLDER'] = 'static/gps/'
 
+
 @app.route("/", methods=['GET'])
 def get_map():
     return redirect(url_for('static', filename='index.html'))
@@ -35,6 +36,7 @@ def upload():
             #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return 'ok'
 
+
 @app.route("/conditions.json", methods=['GET'])
 def get_conditions():
     # Try to get conditions from the cache
@@ -42,15 +44,15 @@ def get_conditions():
     if cond is None:
         print "not in cache, getting latest conditions"
         cond = dict()
-        
+
         cond.update(get_ski_conditions())
         cond.update(get_glisse_conditions())
 
         # Cache conditions for 30 minutes
-        if not cond.has_key('ski_error') or not cond.has_key('glisse_error'):
-            cache.set('conditions', cond, timeout= 30 * 60)
-        else:
+        if 'ski_error' in cond or 'glisse_error' in cond:
             print "error getting conditions; not caching"
+        else:
+            cache.set('conditions', cond, timeout=30 * 60)
     else:
         print "using cache"
 
@@ -106,7 +108,7 @@ def get_ski_conditions():
     for track in coords:
         lat = track["latitude"]
         lng = track["longitude"]
-        if j_pistes.has_key(track["name"]):
+        if track["name"] in j_pistes:
             j_pistes[track["name"]]["latitude"] = lat
             j_pistes[track["name"]]["longitude"] = lng
 
@@ -125,7 +127,6 @@ def get_glisse_conditions():
 
     j_pistes = {}
     for piste in pistes:
-        print "piste", piste
         out = {}
         out["name"] = piste.find('nom').text
         out["open"] = piste.find("ouvert").text
@@ -147,9 +148,7 @@ def get_glisse_conditions():
     for track in coords:
         lat = track["latitude"]
         lng = track["longitude"]
-        #print track["name"], j_pistes.get(track["name"])
-        if j_pistes.has_key(track["name"]):
-            print "has_key"
+        if track["name"] in j_pistes:
             j_pistes[track["name"]]["latitude"] = lat
             j_pistes[track["name"]]["longitude"] = lng
 
