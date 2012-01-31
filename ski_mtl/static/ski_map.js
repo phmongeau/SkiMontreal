@@ -13,14 +13,14 @@ $(document).ready(function(){
 	var size = new OpenLayers.Size(32,37);
 	var offset = new OpenLayers.Pixel(0,-37);
 	ski_icons = {
-		blue: new OpenLayers.Icon('ski_blue.png', size, offset),
-		red:  new OpenLayers.Icon('ski_red.png', size, offset),
-		grey: new OpenLayers.Icon('ski_grey.png', size, offset),
+		blue: new OpenLayers.Icon('static/ski_blue.png', size, offset),
+		red:  new OpenLayers.Icon('static/ski_red.png', size, offset),
+		grey: new OpenLayers.Icon('static/ski_grey.png', size, offset),
 	};
 	glisse_icons = {
-		blue: new OpenLayers.Icon('glisse_blue.png', size, offset),
-		red:  new OpenLayers.Icon('glisse_red.png', size, offset),
-		grey: new OpenLayers.Icon('glisse_grey.png', size, offset),
+		blue: new OpenLayers.Icon('static/glisse_blue.png', size, offset),
+		red:  new OpenLayers.Icon('static/glisse_red.png', size, offset),
+		grey: new OpenLayers.Icon('static/glisse_grey.png', size, offset),
 	};
 
 	// Get JSON
