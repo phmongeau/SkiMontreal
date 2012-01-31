@@ -41,6 +41,8 @@ def upload():
             print(file.read())
             #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return 'ok'
+    elif request.method == 'GET':
+        return render_template('upload.html')
 
 
 @app.route("/conditions.json", methods=['GET'])
