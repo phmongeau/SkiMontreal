@@ -2,13 +2,11 @@ import os
 import json
 import requests
 from datetime import datetime
-from flask import Flask, request, url_for, redirect, send_from_directory
+from flask import Flask, request, url_for, redirect, send_from_directory, render_template
 from lxml import etree
 from werkzeug.contrib.cache import SimpleCache
 from werkzeug import secure_filename
 from flaskext.sqlalchemy import SQLAlchemy
-
-#from ski_mtl.database import db_session
 
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -20,13 +18,16 @@ cache = SimpleCache()
 ALLOWED_EXTENSIONS = set(['gpx', 'kml'])
 app.config['UPLOAD_FOLDER'] = 'static/gps/'
 
-@app.teardown_request
-def shutdown_session(exception=None):
-    db_session.remove()
 
 @app.route("/", methods=['GET'])
 def get_map():
-    return redirect(url_for('static', filename='index.html'))
+    return render_template('index.html')
+
+@app.route("/static/index.html")
+def get_static_map():
+    return redirect(url_for('get_map'))
+    #return redirect(url_for('static', filename='index.html'))
+
 
 
 def allowed_file(filename):
@@ -44,6 +45,9 @@ def upload():
             print(file.read())
             #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return 'ok'
+    elif request.method == 'GET':
+        return render_template('upload.html')
+
 
 @app.route("/conditions.json", methods=['GET'])
 def get_conditions():
@@ -52,15 +56,15 @@ def get_conditions():
     if cond is None:
         print "not in cache, getting latest conditions"
         cond = dict()
-        
+
         cond.update(get_ski_conditions())
         cond.update(get_glisse_conditions())
 
         # Cache conditions for 30 minutes
-        if not cond.has_key('ski_error') or not cond.has_key('glisse_error'):
-            cache.set('conditions', cond, timeout= 30 * 60)
-        else:
+        if 'ski_error' in cond or 'glisse_error' in cond:
             print "error getting conditions; not caching"
+        else:
+            cache.set('conditions', cond, timeout=30 * 60)
     else:
         print "using cache"
 
@@ -116,7 +120,7 @@ def get_ski_conditions():
     for track in coords:
         lat = track["latitude"]
         lng = track["longitude"]
-        if j_pistes.has_key(track["name"]):
+        if track["name"] in j_pistes:
             j_pistes[track["name"]]["latitude"] = lat
             j_pistes[track["name"]]["longitude"] = lng
 
@@ -135,7 +139,6 @@ def get_glisse_conditions():
 
     j_pistes = {}
     for piste in pistes:
-        print "piste", piste
         out = {}
         out["name"] = piste.find('nom').text
         out["open"] = piste.find("ouvert").text
@@ -157,9 +160,7 @@ def get_glisse_conditions():
     for track in coords:
         lat = track["latitude"]
         lng = track["longitude"]
-        #print track["name"], j_pistes.get(track["name"])
-        if j_pistes.has_key(track["name"]):
-            print "has_key"
+        if track["name"] in j_pistes:
             j_pistes[track["name"]]["latitude"] = lat
             j_pistes[track["name"]]["longitude"] = lng
 

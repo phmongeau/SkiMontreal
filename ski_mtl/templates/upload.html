@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="{{ url_for('static', filename='upload.js') }}" type="text/javascript" charset="utf-8"></script>
+	<style type="text/css">
+		#dropzone {
+			height: 25px;
+			width: 300px;
+			background: #ccc;
+			/*padding-top: 5px;*/
+		}
+		.hover {
+			background: #8ac !important;
+		}
+		#progress {
+			background: #ac8;
+			height: 100%;
+			width: 0%;
+			display: block;
+			text-align: center;
+			line-height: 25px;
+		}
+		#input {
+			display:none;
+		}
+		#drop_text {
+			text-align: center;
+			display: block;
+			line-height: 25px;
+		}
+	</style>
+</head>
+<body>
+	<input id="input" type="file" onchange"handleFiles(this.files)"/>
+	<form action="/upload" method="POST" accept-charset="utf-8">
+		<label for="location">Emplacement: </label><input type="text" name="location" id="" value="" />
+		<div id="dropzone">
+			<span id="drop_text">Drop a file here</span>
+			<span id="progress"></span>
+		</div>
+	</form>
+</body>
+</html>
