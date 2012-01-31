@@ -2,7 +2,7 @@ import os
 import json
 import requests
 from datetime import datetime
-from flask import Flask, request, url_for, redirect, send_from_directory
+from flask import Flask, request, url_for, redirect, send_from_directory, render_template
 from lxml import etree
 from werkzeug.contrib.cache import SimpleCache
 from werkzeug import secure_filename
@@ -17,7 +17,13 @@ app.config['UPLOAD_FOLDER'] = 'static/gps/'
 
 @app.route("/", methods=['GET'])
 def get_map():
-    return redirect(url_for('static', filename='index.html'))
+    return render_template('index.html')
+
+@app.route("/static/index.html")
+def get_static_map():
+    return redirect(url_for('get_map'))
+    #return redirect(url_for('static', filename='index.html'))
+
 
 
 def allowed_file(filename):
