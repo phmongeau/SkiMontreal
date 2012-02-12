@@ -48,7 +48,9 @@ def upload():
             print 'accepted', filename
             print(file.read())
             #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return 'ok'
+            return "ok"
+        else:
+            return 'invalid file'
     elif request.method == 'GET':
         return render_template('upload.html')
 
