@@ -7,31 +7,32 @@ from lxml import etree
 from werkzeug.contrib.cache import SimpleCache
 from werkzeug import secure_filename
 from flaskext.sqlalchemy import SQLAlchemy
+#from ski_mtl.models import Track
 
 app = Flask(__name__)
-
-if 'DATABASE_URL' in os.environ:
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-
-db = SQLAlchemy(app)
 
 cache = SimpleCache()
 
 ALLOWED_EXTENSIONS = set(['gpx', 'kml'])
 app.config['UPLOAD_FOLDER'] = 'static/gps/'
 
+def test_db():
+    from ski_mtl.database import db
+    from ski_mtl.models import Track
+
+    t = Track("some place", "some data")
+    db.session.add(t)
+    db.session.commit()
 
 @app.route("/", methods=['GET'])
 def get_map():
     return render_template('index.html')
 
+
 @app.route("/static/index.html")
 def get_static_map():
     return redirect(url_for('get_map'))
     #return redirect(url_for('static', filename='index.html'))
-
 
 
 def allowed_file(filename):
@@ -174,6 +175,7 @@ def get_glisse_conditions():
     return j_pistes
 
 
+from ski_mtl.database import db
 #if __name__ == '__main__':
     #port = int(os.environ.get("PORT", 5000))
     #app.run(host='0.0.0.0', port=port, debug=True)

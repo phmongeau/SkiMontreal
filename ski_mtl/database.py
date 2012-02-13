@@ -1,18 +1,15 @@
 import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from flaskext.sqlalchemy import SQLAlchemy
+from ski_mtl import app
 
-#DATABASE_URL = str(os.environ.get("SHARED_DATABASE_URL", 'sqlite:////tmp/test.db'))
-DATABASE_URL = str(os.environ.get('DATABASE_URL'))
+if 'DATABASE_URL' in os.environ:
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+else:
+    import getpass
+    user = "philippemongeau"
+    pswd = getpass.getpass("Password: ")
+    app.config['SQLALCHEMY_DATABASE_URI'] = \
+            'postgresql+psycopg2://{}:{}@/ski_mtl_test'.format(user, pswd)
 
-engine = create_engine(DATABASE_URL, convert_unicode=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-Base = declarative_base()
-Base.query = db_session.query_property()
 
-def init_db():
-    import ski_mtl.models
-    Base.metadata.create_all(bind=engine)
+db = SQLAlchemy(app)

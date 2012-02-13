@@ -1,6 +1,6 @@
-#from sqlalchemy import Column, Integer, String
-#from ski_mtl.database import Base
-from ski_mtl import db
+#from ski_mtl import db
+from ski_mtl.database import db
+
 
 class Track(db.Model):
     __tablename__ = 'tracks'
@@ -14,4 +14,3 @@ class Track(db.Model):
 
     def __repr__(self):
         return '<Track {}>'.format(self.name)
-
