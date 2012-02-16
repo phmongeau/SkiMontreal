@@ -1,7 +1,5 @@
-import os
 import ski_mtl
 import unittest
-import tempfile
 import json
 
 
@@ -42,6 +40,15 @@ class UploadTestCase(SkiTestCase):
             rv = self.app.post('/upload', data=dict(file=f))
         assert rv.data == "ok"
 
+    def test_upload_same_file(self):
+        with open("test.gpx") as f:
+            rv = self.app.post('/upload', data=dict(file=f))
+        assert rv.data == "ok"
+
+        with open("test.gpx") as f:
+            rv = self.app.post('/upload', data=dict(file=f))
+        assert rv.data == "ok"
+
 
 class DataTestCase(SkiTestCase):
     """Test function related to data"""
@@ -62,6 +69,22 @@ class DataTestCase(SkiTestCase):
 
         x = json.loads(rv.data)
         assert type(x) == dict
+
+    def test_get_gpx_by_name(self):
+        rv = self.app.get('/gpx/get/test.gpx')
+        assert rv.status_code == 200
+        with open('test.gpx') as f:
+            assert rv.data == f.read()
+
+    def test_get_gpx_list(self):
+        rv = self.app.get('/gpx/list')
+        assert rv.status_code == 200
+        assert rv.data is not None
+        x = json.loads(rv.data)
+        assert type(x) == list
+        print len(x)
+        print len(ski_mtl.Track.query.all())
+        assert len(x) == len(ski_mtl.Track.query.all())
 
 
 if __name__ == '__main__':
