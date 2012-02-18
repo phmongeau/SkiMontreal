@@ -126,13 +126,13 @@ def getXML(url):
         document = r.content
     except requests.exceptions.Timeout:
         print 'ski_timeout'
-        return False
+        return None
 
     try:
         tree = etree.fromstring(document)
     except etree.XMLSyntaxError:
         print 'ski: parse_error'
-        return False
+        return None
 
     return tree
 

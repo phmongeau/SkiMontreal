@@ -64,11 +64,11 @@ class DataTestCase(SkiTestCase):
     """Test function related to data"""
 
     def test_invalide_xml_url(self):
-        assert ski_mtl.getXML(self.ski_url + "bla") is False
+        assert ski_mtl.getXML(self.ski_url + "bla") is None
 
     def test_get_xml_has_element_piste(self):
         tree = ski_mtl.getXML(self.ski_url)
-        assert tree is not False
+        assert tree is not None
         assert tree.findall('piste')
 
     def test_get_conditions(self):
