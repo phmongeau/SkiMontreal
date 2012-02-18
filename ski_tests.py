@@ -1,14 +1,22 @@
-import os
-import ski_mtl
 import unittest
-import tempfile
 import json
+import ski_mtl
+from ski_mtl import Track
 
 
 class SkiTestCase(unittest.TestCase):
     def setUp(self):
-        self.app = ski_mtl.app.test_client()
         self.ski_url = "http://depot.ville.montreal.qc.ca/conditions-ski/data.xml"
+
+        ski_mtl.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        #ski_mtl.app.config['SQLALCHEMY_DATABASE_URI'] = \
+                #'postgresql+psycopg2://{}:{}@/ski_mtl_test'.format('testuser', 'toto')
+        ski_mtl.db.create_all()
+
+        self.app = ski_mtl.app.test_client()
+
+    def tearDown(self):
+        ski_mtl.db.drop_all()
 
 
 class PagesTestCase(SkiTestCase):
@@ -42,6 +50,15 @@ class UploadTestCase(SkiTestCase):
             rv = self.app.post('/upload', data=dict(file=f))
         assert rv.data == "ok"
 
+    def test_upload_same_file(self):
+        with open("test.gpx") as f:
+            rv = self.app.post('/upload', data=dict(file=f))
+        assert rv.data == "ok"
+
+        with open("test.gpx") as f:
+            rv = self.app.post('/upload', data=dict(file=f))
+        assert rv.data == "ok"
+
 
 class DataTestCase(SkiTestCase):
     """Test function related to data"""
@@ -51,7 +68,7 @@ class DataTestCase(SkiTestCase):
 
     def test_get_xml_has_element_piste(self):
         tree = ski_mtl.getXML(self.ski_url)
-        assert tree is not None
+        assert tree is not False
         assert tree.findall('piste')
 
     def test_get_conditions(self):
@@ -62,6 +79,28 @@ class DataTestCase(SkiTestCase):
 
         x = json.loads(rv.data)
         assert type(x) == dict
+
+    def test_get_gpx_by_name(self):
+        with open("test.gpx") as f:
+            rv = self.app.post('/upload', data=dict(file=f))
+
+        rv = self.app.get('/gpx/get/test.gpx')
+        assert rv.status_code == 200
+        with open('test.gpx') as f:
+            assert rv.data == f.read()
+
+    def test_get_gpx_list(self):
+        with open("test.gpx") as f:
+            rv = self.app.post('/upload', data=dict(file=f))
+
+        rv = self.app.get('/gpx/list')
+        assert rv.status_code == 200
+        assert rv.data is not None
+        x = json.loads(rv.data)
+        assert type(x) == list
+        print len(x)
+        print len(ski_mtl.Track.query.all())
+        #assert len(x) == len(ski_mtl.Track.query.all())
 
 
 if __name__ == '__main__':

@@ -2,36 +2,78 @@ import os
 import json
 import requests
 from datetime import datetime
-from flask import Flask, request, url_for, redirect, send_from_directory, render_template
+from flask import Flask, request, url_for, redirect, render_template
 from lxml import etree
 from werkzeug.contrib.cache import SimpleCache
 from werkzeug import secure_filename
 from flaskext.sqlalchemy import SQLAlchemy
+#from ski_mtl.models import Track
 
 app = Flask(__name__)
 
+# Setup DB
 if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    user = "testuser"
+    pswd = "toto"
+    app.config['SQLALCHEMY_DATABASE_URI'] = \
+            'postgresql+psycopg2://{}:{}@/ski_mtl'.format(user, pswd)
 
 db = SQLAlchemy(app)
 
+
+class Track(db.Model):
+    __tablename__ = 'tracks'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+    data = db.Column(db.String())
+
+    def __init__(self, name=None, data=None):
+        self.name = name
+        self.data = data
+
+    def __repr__(self):
+        return '<Track {}>'.format(self.name)
+
+# Setup Cache
 cache = SimpleCache()
 
+# Other configs
 ALLOWED_EXTENSIONS = set(['gpx', 'kml'])
-app.config['UPLOAD_FOLDER'] = 'static/gps/'
+
+
+@app.route("/add/<place>/<data>")
+def test_db(place, data):
+    t = Track(place, data)
+    db.session.add(t)
+    db.session.commit()
+    return redirect(url_for('get_map'))
+
+
+@app.route("/gpx/get/<place>")
+def get_gpx(place):
+    t = Track.query.filter(Track.name == place).first()
+    if t is not None:
+        return t.data
+    else:
+        return 'null'
+
+
+@app.route("/gpx/list")
+def list_gpx():
+    return json.dumps([t.name for t in Track.query.all()])
 
 
 @app.route("/", methods=['GET'])
 def get_map():
     return render_template('index.html')
 
+
 @app.route("/static/index.html")
 def get_static_map():
     return redirect(url_for('get_map'))
     #return redirect(url_for('static', filename='index.html'))
-
 
 
 def allowed_file(filename):
@@ -41,13 +83,17 @@ def allowed_file(filename):
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        print "received file"
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            print 'accepted', filename
-            print(file.read())
-            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            t = Track.query.filter(Track.name == filename).first()
+            if t is not None:
+                t.data = file.read()
+            else:
+                t = Track(filename, file.read())
+
+            db.session.add(t)
+            db.session.commit()
             return "ok"
         else:
             return 'invalid file'
@@ -60,7 +106,6 @@ def get_conditions():
     # Try to get conditions from the cache
     cond = cache.get('conditions')
     if cond is None:
-        print "not in cache, getting latest conditions"
         cond = dict()
 
         cond.update(get_ski_conditions())
@@ -71,8 +116,6 @@ def get_conditions():
             print "error getting conditions; not caching"
         else:
             cache.set('conditions', cond, timeout=30 * 60)
-    else:
-        print "using cache"
 
     return json.dumps(cond, indent=4, sort_keys=True, ensure_ascii=False)
 
@@ -172,8 +215,3 @@ def get_glisse_conditions():
 
     j_pistes["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
     return j_pistes
-
-
-#if __name__ == '__main__':
-    #port = int(os.environ.get("PORT", 5000))
-    #app.run(host='0.0.0.0', port=port, debug=True)

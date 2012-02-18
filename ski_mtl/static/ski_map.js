@@ -188,16 +188,14 @@ function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) 
 
 function loadPistes()
 {
-	files = [
-		//'/static/gps/2011-02-06 1152.gpx',
-		//'/static/gps/2010-12-30 1429.gpx'
-	];
-
-	for (var i in files)
-	{
-		url = files[i];
-		addGPX(url, i);
-	}
+	$.getJSON("/gpx/list", function(data){
+		files = data
+		for (var i in files)
+		{
+			url = '/gpx/get/' + files[i];
+			addGPX(url, i);
+		}
+	});
 }
 
 
