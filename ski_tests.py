@@ -69,7 +69,7 @@ class DataTestCase(SkiTestCase):
 
     def test_get_xml_has_element_piste(self):
         tree = ski_mtl.getXML(self.ski_url)
-        assert tree is not None
+        self.assertTrue(tree)
         assert tree.findall('piste')
 
     def test_get_conditions(self):

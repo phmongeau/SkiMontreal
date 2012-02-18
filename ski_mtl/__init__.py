@@ -17,8 +17,6 @@ if 'DATABASE_URL' in os.environ:
 else:
     user = "testuser"
     pswd = "toto"
-    #import getpass
-    #pswd = getpass.getpass("Password: ")
     app.config['SQLALCHEMY_DATABASE_URI'] = \
             'postgresql+psycopg2://{}:{}@/ski_mtl'.format(user, pswd)
 
@@ -57,7 +55,6 @@ def test_db(place, data):
 def get_gpx(place):
     t = Track.query.filter(Track.name == place).first()
     if t is not None:
-        print 'data was: ', t.data
         return t.data
     else:
         return 'null'
@@ -109,7 +106,6 @@ def get_conditions():
     # Try to get conditions from the cache
     cond = cache.get('conditions')
     if cond is None:
-        print "not in cache, getting latest conditions"
         cond = dict()
 
         cond.update(get_ski_conditions())
@@ -120,8 +116,6 @@ def get_conditions():
             print "error getting conditions; not caching"
         else:
             cache.set('conditions', cond, timeout=30 * 60)
-    else:
-        print "using cache"
 
     return json.dumps(cond, indent=4, sort_keys=True, ensure_ascii=False)
 
