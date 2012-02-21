@@ -15,14 +15,15 @@ $(document).ready(function(){
 	ski_icons = {
 		blue: new OpenLayers.Icon('static/ski_blue.png', size, offset),
 		red:  new OpenLayers.Icon('static/ski_red.png', size, offset),
-		grey: new OpenLayers.Icon('static/ski_grey.png', size, offset),
+		grey: new OpenLayers.Icon('static/ski_grey.png', size, offset)
 	};
 	glisse_icons = {
 		blue: new OpenLayers.Icon('static/glisse_blue.png', size, offset),
 		red:  new OpenLayers.Icon('static/glisse_red.png', size, offset),
-		grey: new OpenLayers.Icon('static/glisse_grey.png', size, offset),
+		grey: new OpenLayers.Icon('static/glisse_grey.png', size, offset)
 	};
 
+	map = createMap();
 	// Get JSON
 	$.getJSON("/conditions.json", function(data){
 		locations = data;
@@ -30,7 +31,6 @@ $(document).ready(function(){
 		addMarkers(locations, map);
 		loadPistes();
 	});
-	map = createMap();
 	
 	// Toggle Buttons
 	$("#skiToggle").click(function() {
@@ -51,10 +51,10 @@ $(document).ready(function(){
 });
 
 
-function createMap(long, lat)
+function createMap()
 {
 	var map;
-	var lat = 45.530079, long = -73.631354;
+	var lat = 45.530079, lng = -73.631354;
 	var zoom=11;
 
 	map = new OpenLayers.Map('map', {
@@ -72,7 +72,7 @@ function createMap(long, lat)
 
 	map.proj = new OpenLayers.Projection("EPSG:4326");
 
-	var lonLat = new OpenLayers.LonLat(long, lat);
+	var lonLat = new OpenLayers.LonLat(lng, lat);
 	lonLat.transform(map.proj, map.getProjectionObject());
 	map.setCenter(lonLat, zoom);
 
@@ -82,7 +82,7 @@ function createMap(long, lat)
 	glisse_markers = new OpenLayers.Layer.Markers("Glisse");
 	map.addLayer(glisse_markers);
 
-	return map
+	return map;
 
 	//addMarkers(locations, map);
 }
@@ -94,7 +94,7 @@ function addMarkers(locations, map)
 		console.log("can't load data");
 		console.log('ski: ' + locations.ski_error);
 		console.log('glisse: ' + locations.glisse_error);
-		return
+		return;
 	}
 	for(var i in locations)
 	{
@@ -111,10 +111,11 @@ function addMarkers(locations, map)
 }
 
 function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) {
+	var feature;
 	if(track.type == "ski")
-		var feature = new OpenLayers.Feature(ski_markers, ll);
+		feature = new OpenLayers.Feature(ski_markers, ll);
 	else
-		var feature = new OpenLayers.Feature(glisse_markers, ll);
+		feature = new OpenLayers.Feature(glisse_markers, ll);
 	feature.closeBox = closeBox;
 	feature.popupClass = popupClass;
 	//feature.data.popupContentHTML = popupContentHTML;
@@ -189,7 +190,7 @@ function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) 
 function loadPistes()
 {
 	$.getJSON("/gpx/list", function(data){
-		files = data
+		files = data;
 		for (var i in files)
 		{
 			url = '/gpx/get/' + files[i];
@@ -221,8 +222,6 @@ function addGPX(file_url, index, color)
 			})
 		})
 	});
-
-	lgpx.setZIndex(325);
 
 	map.addLayer(lgpx);
 }
