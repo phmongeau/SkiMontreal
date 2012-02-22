@@ -1,4 +1,4 @@
-var locations, infoWindows, icons, ski_markers, glisse_markers, features, map;
+var locations, infoWindows, icons, ski_markers, glisse_markers, features, map, style_ski, style_glisse;
 
 AutoSizeAnchored = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
 	'autoSize': true
@@ -22,6 +22,9 @@ $(document).ready(function(){
 		red:  new OpenLayers.Icon('static/glisse_red.png', size, offset),
 		grey: new OpenLayers.Icon('static/glisse_grey.png', size, offset)
 	};
+
+	style_ski = {};
+	style_glisse = {};
 
 	map = createMap();
 	// Get JSON
@@ -76,15 +79,52 @@ function createMap()
 	lonLat.transform(map.proj, map.getProjectionObject());
 	map.setCenter(lonLat, zoom);
 
-	ski_markers = new OpenLayers.Layer.Markers("Ski");
-	map.addLayer(ski_markers);
+	function createStyle(img)
+	{
+		var style;
+		style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+		style.externalGraphic = img;
+		style.graphicOpacity = 1;
+		style.graphicHeight = 37;
+		style.graphicYOffset = -style.graphicHeight;
+		return style;
+	}
+	
+	style_ski.blue = createStyle("static/ski_blue.png");
+	style_ski.red = createStyle("static/ski_red.png");
+	style_ski.grey = createStyle("static/ski_grey.png");
 
-	glisse_markers = new OpenLayers.Layer.Markers("Glisse");
+	style_glisse.blue = createStyle("static/glisse_blue.png");
+	style_glisse.red  = createStyle("static/glisse_red.png");
+	style_glisse.grey = createStyle("static/glisse_grey.png");
+
+
+	glisse_markers = new OpenLayers.Layer.Vector("Vector Layer");
 	map.addLayer(glisse_markers);
 
-	return map;
+	ski_markers = new OpenLayers.Layer.Vector("Vector Layer");
+	map.addLayer(ski_markers);
 
-	//addMarkers(locations, map);
+	selected = function(evt) {
+		console.log(evt.feature.data.popupContentHTML + " selected on " + this.name);
+		//if(evt.feature.popup === null) {
+			//evt.feature.popup = new OpenLayers.Popup.FramedCloud("chicken", 
+						 //evt.feature.geometry.getBounds().getCenterLonLat(),
+						 //null,
+						 //evt.feature.popupContentHTML,
+						 //null, true, null);
+			////evt.feature.popup = evt.feature.createPopup(evt.feature.closeBox);
+			//map.addPopup(evt.feature.popup);
+			//evt.feature.popup.show();
+		//}
+	};
+	ski_markers.events.register("featureselected", ski_markers, selected);
+
+	control = new OpenLayers.Control.SelectFeature(ski_markers);
+	map.addControl(control);
+	control.activate();
+
+	return map;
 }
 
 function addMarkers(locations, map)
@@ -100,7 +140,7 @@ function addMarkers(locations, map)
 	{
 		loc = locations[i];
 
-		var markerLoc = new OpenLayers.LonLat(loc.longitude, loc.latitude);
+		var markerLoc = new OpenLayers.Geometry.Point(loc.longitude, loc.latitude);
 		markerLoc.transform(map.proj, map.getProjectionObject());
 
 		if(loc.name)
@@ -112,33 +152,37 @@ function addMarkers(locations, map)
 
 function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) {
 	var feature;
-	if(track.type == "ski")
-		feature = new OpenLayers.Feature(ski_markers, ll);
-	else
-		feature = new OpenLayers.Feature(glisse_markers, ll);
-	feature.closeBox = closeBox;
-	feature.popupClass = popupClass;
-	//feature.data.popupContentHTML = popupContentHTML;
-	feature.data.overflow = (overflow) ? "auto" : "hidden";
 
 	if(track.type == "ski")
 	{
+		feature = new OpenLayers.Feature.Vector(ll, null, style_ski.blue);
+
 		if (track.open == "null" || track.open == "0" || !track.open)
-			feature.data.icon = ski_icons.grey.clone();
+			feature.style = style_ski.grey;
 		else if (track.condition == "Bonne" || track.condition == "Excellente")
-			feature.data.icon = ski_icons.blue.clone();
+			feature.style = style_ski.blue;
 		else
-			feature.data.icon = ski_icons.red.clone();
+			feature.style = style_ski.red;
+
+		ski_markers.addFeatures([feature]);
 	}
 	else
 	{
+		feature = new OpenLayers.Feature.Vector(ll, null, style_glisse.red); //TODO
+
 		if (track.open == "null" || track.open == "0" || !track.open)
-			feature.data.icon = glisse_icons.grey.clone();
+			feature.style = style_glisse.grey;
 		else if (track.condition == "Bonne" || track.condition == "Excellente")
-			feature.data.icon = glisse_icons.blue.clone();
+			feature.style = style_glisse.blue;
 		else
-			feature.data.icon = glisse_icons.red.clone();
+			feature.style = style_glisse.red;
+
+		glisse_markers.addFeatures([feature]);
 	}
+
+	feature.closeBox = closeBox;
+	feature.popupClass = popupClass;
+	feature.data.overflow = (overflow) ? "auto" : "hidden";
 
 	popupContentHTML =   ""
 					   + "<div>"
@@ -154,37 +198,35 @@ function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) 
 					   + "</div>";
 	feature.data.popupContentHTML = popupContentHTML;
 
-	marker = feature.createMarker();
-	//marker.icon = icons.blue.clone();
 
-	var markerClick = function (evt) {
-		if(this.popup == null) {
-			features.forEach(function(f){ if(f.popup != null) f.popup.hide();});
-			this.popup = this.createPopup(this.closeBox);
-			map.addPopup(this.popup);
-			this.popup.show();
-		}
-		else
-		{
-			if(this.popup.visible()) {
-				return this.popup.hide();
-			}
-			else
-			{
-				features.forEach(function(f){ if(f.popup != null) f.popup.hide();});
-				this.popup.toggle();
-			}
-		}
-		currentPopup = this.popup;
-		OpenLayers.Event.stop(evt);
-	};
-	marker.events.register("mousedown", feature, markerClick);
+	//var markerClick = function (evt) {
+		//if(this.popup == null) {
+			//features.forEach(function(f){ if(f.popup != null) f.popup.hide();});
+			//this.popup = this.createPopup(this.closeBox);
+			//map.addPopup(this.popup);
+			//this.popup.show();
+		//}
+		//else
+		//{
+			//if(this.popup.visible()) {
+				//return this.popup.hide();
+			//}
+			//else
+			//{
+				//features.forEach(function(f){ if(f.popup != null) f.popup.hide();});
+				//this.popup.toggle();
+			//}
+		//}
+		//currentPopup = this.popup;
+		//OpenLayers.Event.stop(evt);
+	//};
+	//marker.events.register("mousedown", feature, markerClick);
 
 	features.push(feature);
-	if(track.type == "ski")
-		ski_markers.addMarker(marker);
-	else
-		glisse_markers.addMarker(marker);
+	//if(track.type == "ski")
+		//ski_markers.addMarker(marker);
+	//else
+		//glisse_markers.addMarker(marker);
 }
 
 function loadPistes()
@@ -202,7 +244,7 @@ function loadPistes()
 
 function addGPX(file_url, index, color)
 {
-	if (color == null || color == undefined)
+	if (color === null || color === undefined)
 	{
 		color = "blue";
 	}
