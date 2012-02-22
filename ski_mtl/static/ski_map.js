@@ -1,4 +1,4 @@
-var locations, infoWindows, icons, ski_markers, glisse_markers, features, map, style_ski, style_glisse;
+var locations, infoWindows, icons, ski_markers, glisse_markers, features, map, style_ski, style_glisse, selectedFeatures;
 
 AutoSizeAnchored = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
 	'autoSize': true
@@ -99,30 +99,51 @@ function createMap()
 	style_glisse.grey = createStyle("static/glisse_grey.png");
 
 
-	glisse_markers = new OpenLayers.Layer.Vector("Vector Layer");
+	glisse_markers = new OpenLayers.Layer.Vector("Glisse");
 	map.addLayer(glisse_markers);
 
-	ski_markers = new OpenLayers.Layer.Vector("Vector Layer");
+	ski_markers = new OpenLayers.Layer.Vector("Ski");
 	map.addLayer(ski_markers);
 
-	selected = function(evt) {
-		console.log(evt.feature.data.popupContentHTML + " selected on " + this.name);
-		//if(evt.feature.popup === null) {
-			//evt.feature.popup = new OpenLayers.Popup.FramedCloud("chicken", 
-						 //evt.feature.geometry.getBounds().getCenterLonLat(),
-						 //null,
-						 //evt.feature.popupContentHTML,
-						 //null, true, null);
-			////evt.feature.popup = evt.feature.createPopup(evt.feature.closeBox);
-			//map.addPopup(evt.feature.popup);
-			//evt.feature.popup.show();
-		//}
-	};
-	ski_markers.events.register("featureselected", ski_markers, selected);
+	var selectControl = new OpenLayers.Control.SelectFeature(ski_markers);
+	map.addControl(selectControl);
+	selectControl.activate();
 
-	control = new OpenLayers.Control.SelectFeature(ski_markers);
-	map.addControl(control);
-	control.activate();
+
+	selectedFeatures = [];
+
+	onFeatureSelect = function(evt) {
+		//close all popups
+		for(i in selectedFeatures)
+		{
+			var f = selectedFeatures.pop();
+			f.popup.hide();
+		}
+
+		var feature = evt.feature;
+		selectedFeatures.push(feature);
+		if ( feature.popup === null)
+		{
+			popup = new AutoSizeAnchored("chicken",
+					feature.geometry.getBounds().getCenterLonLat(),
+					null,
+					feature.data.popupContentHTML,
+					null, true, null);
+			feature.popup = popup;
+			map.addPopup(popup);
+		}
+		else {
+			feature.popup.show();
+		}
+	};
+
+	onFeatureDeselect = function(evt) {
+		evt.feature.popup.hide();
+	};
+
+	ski_markers.events.register("featureselected", ski_markers, onFeatureSelect);
+	glisse_markers.events.register("featureselected", glisse_markers, onFeatureSelect);
+
 
 	return map;
 }
@@ -168,7 +189,7 @@ function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) 
 	}
 	else
 	{
-		feature = new OpenLayers.Feature.Vector(ll, null, style_glisse.red); //TODO
+		feature = new OpenLayers.Feature.Vector(ll, null, style_glisse.red);
 
 		if (track.open == "null" || track.open == "0" || !track.open)
 			feature.style = style_glisse.grey;
@@ -199,34 +220,7 @@ function addMarker(track, ll, popupClass, popupContentHTML, closeBox, overflow) 
 	feature.data.popupContentHTML = popupContentHTML;
 
 
-	//var markerClick = function (evt) {
-		//if(this.popup == null) {
-			//features.forEach(function(f){ if(f.popup != null) f.popup.hide();});
-			//this.popup = this.createPopup(this.closeBox);
-			//map.addPopup(this.popup);
-			//this.popup.show();
-		//}
-		//else
-		//{
-			//if(this.popup.visible()) {
-				//return this.popup.hide();
-			//}
-			//else
-			//{
-				//features.forEach(function(f){ if(f.popup != null) f.popup.hide();});
-				//this.popup.toggle();
-			//}
-		//}
-		//currentPopup = this.popup;
-		//OpenLayers.Event.stop(evt);
-	//};
-	//marker.events.register("mousedown", feature, markerClick);
-
 	features.push(feature);
-	//if(track.type == "ski")
-		//ski_markers.addMarker(marker);
-	//else
-		//glisse_markers.addMarker(marker);
 }
 
 function loadPistes()
