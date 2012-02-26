@@ -105,10 +105,9 @@ function createMap()
 	ski_markers = new OpenLayers.Layer.Vector("Ski");
 	map.addLayer(ski_markers);
 
-	var selectControl = new OpenLayers.Control.SelectFeature(ski_markers);
+	var selectControl = new OpenLayers.Control.SelectFeature([ski_markers, glisse_markers]);
 	map.addControl(selectControl);
 	selectControl.activate();
-
 
 	selectedFeatures = [];
 
