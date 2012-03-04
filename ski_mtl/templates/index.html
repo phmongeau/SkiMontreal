@@ -8,18 +8,46 @@
 		#map {
 			width: 900px;
 			height: 600px;
+			clear: both;
 		}
 		#info, #logo, #center {
 			width: 900px;
 			margin: 0 auto;
 		}
+		#nav {
+			border-bottom: 1px solid #000;
+			width: 100%;
+		}
 
-		.olPopupCloseBox {
-			background: url("{{ url_for('static', filename='img/close2.gif') }}") !important;
+		#nav a {
+			background: #2A8FD3;
+			clear: both;
+			color: #FFFFFF;
+			display: inline-block;
+			height: 25px;
+			line-height: 25px;
+			text-align: center;
+			width: 150px;
+			-webkit-border-radius: 10px 10px 0px 0px; 
+			-moz-border-radius: 10px 10px 0px 0px; 
+			border-radius: 10px 10px 0px 0px; 
+		}
+
+		#nav a:hover {
+			background: #3A9FE3;
 		}
 
 		.toggle {
 			cursor: pointer;
+		}
+
+		.olMapViewport {
+			-webkit-border-radius : 0px 0px 10px 10px;
+			-moz-border-radius    : 0px 0px 10px 10px;
+			border-radius         : 0px 0px 10px 10px;
+		}
+		.olPopupCloseBox {
+			background: url("{{ url_for('static', filename='img/close2.gif') }}") !important;
 		}
 
 	</style>
@@ -27,6 +55,10 @@
 <body>
 	<h1 id="logo">Ski Montreal</h1>
 	<div id="center">
+		<div id="nav">
+			<a href="/">Carte</a>
+			<a href="/contribuer">Contribuer</a>
+		</div>
 		<div id="map">
 		</div>
 		<span class="toggle" id="skiToggle" href="#" title="toggle ski"><img src="/static/button_ski_blue.png" alt="toogle ski" /></span>

@@ -80,17 +80,19 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
+@app.route('/contribuer', methods=['GET', 'POST'])
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
+        #name = request.form["location"]
         file = request.files['file']
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            t = Track.query.filter(Track.name == filename).first()
+            placename = secure_filename(file.filename)
+            t = Track.query.filter(Track.name == placename).first()
             if t is not None:
                 t.data = file.read()
             else:
-                t = Track(filename, file.read())
+                t = Track(placename, file.read())
 
             db.session.add(t)
             db.session.commit()

@@ -6,15 +6,26 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="{{ url_for('static', filename='upload.js') }}" type="text/javascript" charset="utf-8"></script>
 	<style type="text/css">
+		#logo, #center {
+			width: 900px;
+			margin: 0 auto;
+		}
+		
+
 		#dropzone {
 			height: 25px;
 			width: 300px;
-			background: #ccc;
+			/*background: #ccc;*/
 			/*padding-top: 5px;*/
 		}
+
 		.hover {
+			height: 25px;
+			width: 300px;
 			background: #8ac !important;
 		}
+
+
 		#progress {
 			background: #ac8;
 			height: 100%;
@@ -24,23 +35,65 @@
 			line-height: 25px;
 		}
 		#input {
-			display:none;
+			//display:none;
 		}
 		#drop_text {
 			text-align: center;
-			display: block;
+			display: none;;
 			line-height: 25px;
+		}
+
+		#nav {
+			border-bottom: 1px solid #000;
+			width: 100%;
+		}
+
+		#nav a {
+			background: #2A8FD3;
+			clear: both;
+			color: #FFFFFF;
+			display: inline-block;
+			height: 25px;
+			line-height: 25px;
+			text-align: center;
+			width: 150px;
+			-webkit-border-radius: 10px 10px 0px 0px; 
+			-moz-border-radius: 10px 10px 0px 0px; 
+			border-radius: 10px 10px 0px 0px; 
+		}
+
+		#nav a:hover {
+			background: #3A9FE3;
 		}
 	</style>
 </head>
 <body>
-	<input id="input" type="file" onchange"handleFiles(this.files)"/>
-	<form action="/upload" method="POST" accept-charset="utf-8">
-		<label for="location">Emplacement: </label><input type="text" name="location" id="" value="" />
-		<div id="dropzone">
-			<span id="drop_text">Drop a file here</span>
-			<span id="progress"></span>
+	<h1 id="logo">Ski Montreal</h1>
+	<div id="center">
+		<div id="nav">
+			<a href="/">Carte</a>
+			<a href="/contribuer">Contribuer</a>
 		</div>
-	</form>
+		<h2>Comment contribuer:</h2>
+		<h3>Envoyer des tracés GPS</h3>
+
+		<form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data" accept-charset="utf-8">
+			<div id="dropzone">
+				<input id="input" name="file" type="file" multiple="" onchange="handleFiles(this.files)"/>
+				<span id="drop_text">Drop a file here</span>
+				<span id="progress"></span>
+			</div>
+			<!--<button type="submit">Envoyer</button>-->
+			<a href="#" id="send_form">Envoyer</a>
+		</form>
+		<div id="file_list">
+			<ul>
+			</ul>
+		</div>
+
+		<h3>Contribuer au code</h3>
+		<p>Le code source  est disponible sur Github</p>
+		<a href="https://github.com/phmongeau/SkiMontreal">https://github.com/phmongeau/SkiMontreal</a>
+	</div>
 </body>
 </html>

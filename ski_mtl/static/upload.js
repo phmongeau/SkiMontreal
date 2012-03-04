@@ -1,54 +1,85 @@
 $(document).ready(function() {
 
 	drop = document.getElementById('dropzone');
+	files = [];
+	file_names = [];
 
-	drop.onclick = function() {
-		console.log("test");
-		document.getElementById("input").click();
-	};
+	//drop.onclick = function() {
+		//console.log("test");
+		//document.getElementById("input").click();
+	//};
 	
 	drop.ondragover = function () {
 		this.className = 'hover';
+		document.getElementById("input").style.display = "none";
 		var progress = document.getElementById("progress");
 		progress.style.display = "none";
+		document.getElementById("drop_text").style.display = "block";
 		return false;
 	};
-	drop.ondragend = function () { this.className = ''; return false; };
-	drop.ondragleave = function () { this.className = ''; return false; };
+	drop.ondragend = function () {
+		document.getElementById("input").style.display = "";
+		document.getElementById("drop_text").style.display = "none";
+		this.className = ''; return false; 
+	};
+	drop.ondragleave = function () {
+		document.getElementById("input").style.display = "";
+		document.getElementById("drop_text").style.display = "none";
+		this.className = ''; return false;
+	};
 
 	drop.ondrop = function (e) {
 		e.preventDefault();
 
-		this.className = '';
-		var progress = document.getElementById("progress");
-		progress.innerHTML = "";
-		progress.style.width = "0%";
-		progress.style.display = "block";
-
+		document.getElementById("input").style.display = "";
 		document.getElementById("drop_text").style.display = "none";
 
-		file = e.dataTransfer.files[0];
+		addFiles(e.dataTransfer.files);
 
-		var fd = new FormData();
-		fd.append("file", file);
-
-		xhr = new XMLHttpRequest();
-		xhr.open("POST", "/upload");
-
-		xhr.upload.addEventListener("progress", function(e) {
-				if (e.lengthComputable) {
-					var percent = Math.round((e.loaded * 100) / e.total);
-					progress.style.width = percent + "%";
-					progress.innerHTML = percent + "%";
-					console.log(percent);
-				}
-		}, false);
-
-		xhr.upload.addEventListener("loadend", function(e) {
-			progress.style.width = "100%";
-			progress.innerHTML = "Done";
-		});
-
-		xhr.send(fd);
+		this.className = ''; return false;
 	}
+
+	addFiles = function(input_files) {
+
+		for (var i = 0; i < input_files.length; ++i)
+		{
+			var f = input_files.item(i);
+			if (f.name.split(".").reverse()[0] === "gpx" && file_names.indexOf(f.name) == -1)
+				files.push(f);
+				file_names.push(f.name);
+		}
+		$("#file_list ul").html('');
+		for (var i in files)
+		{
+			var file = files[i];
+			
+			$("#file_list ul").append("<li>" + file.name + "</li>");
+		}
+
+	}
+
+	handleFiles = function(f)
+	{
+		addFiles(f);
+	}
+
+	sendFiles = function()
+	{
+		var form = document.getElementById("uploadForm");
+
+
+		for (var i in files)
+		{
+			var fd = new FormData();
+			fd.append("file", files[i]);
+
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST", "/upload");
+			xhr.send(fd);
+		}
+	}
+
+	$("#send_form").click(function() {
+		sendFiles();
+	});
 });
