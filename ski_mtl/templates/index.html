@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Ski Montreal</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" type="text/css" media="all" />
 
 	<style type="text/css">
 		#map {
@@ -42,9 +43,15 @@
 		}
 
 		.olMapViewport {
-			-webkit-border-radius : 0px 0px 10px 10px;
-			-moz-border-radius    : 0px 0px 10px 10px;
-			border-radius         : 0px 0px 10px 10px;
+			-webkit-border-radius : 10px;
+			-moz-border-radius    : 10px;
+			border-radius         : 10px;
+
+			border-top: 1px solid  #888;
+			border-left: 1px solid #888;
+
+			border-bottom: 1px solid #DDD;
+			border-right: 1px solid #DDD;
 		}
 		.olPopupCloseBox {
 			background: url("{{ url_for('static', filename='img/close2.gif') }}") !important;
@@ -55,10 +62,14 @@
 <body>
 	<h1 id="logo">Ski Montreal</h1>
 	<div id="center">
-		<div id="nav">
-			<a href="/">Carte</a>
-			<a href="/contribuer">Contribuer</a>
-		</div>
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="/">Carte</a></li>
+			<li ><a href="/contribuer">Contribuer</a></li>
+		</ul>
+		<!--<div id="nav">-->
+			<!--<a href="/">Carte</a>-->
+			<!--<a href="/contribuer">Contribuer</a>-->
+		<!--</div>-->
 		<div id="map">
 		</div>
 		<span class="toggle" id="skiToggle" href="#" title="toggle ski"><img src="/static/button_ski_blue.png" alt="toogle ski" /></span>

@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title></title>
+	<title>Contribuer | SkiMontreal</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="{{ url_for('static', filename='upload.js') }}" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" type="text/css" media="all" />
 	<style type="text/css">
 		#logo, #center {
 			width: 900px;
@@ -39,7 +40,7 @@
 			line-height: 25px;
 		}
 
-		#send_form {
+		/*#send_form {
 			background: #2A8FD3;
 			color: #fff;
 			padding: 5px;
@@ -47,7 +48,7 @@
 			-webkit-border-radius : 5px;
 			-moz-border-radius    : 5px;
 			border-radius         : 5px;
-		}
+		}*/
 
 		#nav {
 			border-bottom: 1px solid #000;
@@ -71,15 +72,35 @@
 		#nav a:hover {
 			background: #3A9FE3;
 		}
+
+		.file_item li {
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			padding: 2px;
+			margin: 2px;
+			max-width: 500px;
+			display: block;
+		}
 	</style>
 </head>
 <body>
 	<h1 id="logo">Ski Montreal</h1>
 	<div id="center">
-		<div id="nav">
-			<a href="/">Carte</a>
-			<a href="/contribuer">Contribuer</a>
+		<div id="messages">
+			{% with messages = get_flashed_messages(with_categories=True) %}
+				{% if messages %}
+					<ul class="flashes">
+						{% for category, message in messages %}
+						<li class="alert alert-{{ category }}">{{ message }}</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
 		</div>
+		<ul class="nav nav-tabs">
+			<li><a href="/">Carte</a></li>
+			<li class="active"><a href="/contribuer">Contribuer</a></li>
+		</ul>
 		<h2>Comment contribuer:</h2>
 		<h3>Envoyer des tracés GPS</h3>
 
@@ -89,13 +110,12 @@
 				<span id="drop_text">Drop a file here</span>
 				<span id="progress"></span>
 			</div>
-			<!--<button type="submit">Envoyer</button>-->
-			<a href="#" id="send_form">Envoyer</a>
+			<div id="file_list">
+				<ul class="unstyled file_item">
+				</ul>
+			</div>
+			<a href="#" class="btn btn-primary" id="send_form">Envoyer</a>
 		</form>
-		<div id="file_list">
-			<ul>
-			</ul>
-		</div>
 
 		<h3>Contribuer au code</h3>
 		<p>Le code source  est disponible sur Github</p>

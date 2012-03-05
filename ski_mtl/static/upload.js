@@ -67,19 +67,46 @@ $(document).ready(function() {
 	{
 		var form = document.getElementById("uploadForm");
 
+		var errors = [];
+
 
 		for (var i in files)
 		{
 			var fd = new FormData();
 			fd.append("file", files[i]);
 
-			var xhr = new XMLHttpRequest();
-			xhr.open("POST", "/upload");
+			xhr = new XMLHttpRequest();
+			xhr.open("POST", "/upload", false);
 			xhr.send(fd);
+
+			if(xhr.status !== 200)
+			{
+				errors.push(files[i].name)
+			}
+
+
+		}
+		console.log(errors);
+		if(errors.length > 0)
+		{
+			for (var i in errors)
+			{
+				file = errors[i];
+				$("#messages").append("<ul class='flashes'><li class='alert alert-error'> le type du ficher " + file + " n'est pas un type accpepté.</li></ul>");
+			}
+		}
+		else (xhr.status === 200)
+		{
+			$("#messages").append("<ul class='flashes'><li class='alert alert-success'>Les fichiers ont été téléversés avec succès</li></ul>");
 		}
 	}
 
 	$("#send_form").click(function() {
-		sendFiles();
+		if(window.FormData) {
+			sendFiles();
+		}
+		else {
+			document.getElementById("uploadForm").submit();
+		}
 	});
 });

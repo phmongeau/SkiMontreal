@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 import json
 import ski_mtl
@@ -43,21 +44,25 @@ class UploadTestCase(SkiTestCase):
     def test_bad_file_upload(self):
         with open("test.txt") as f:
             rv = self.app.post('/upload', data=dict(file=f))
-        assert rv.data == "invalid file"
+        assert rv.status_code == 415
+        assert "Type de fichier invalide" in rv.data
 
     def test_valid_file_upload(self):
         with open("test.gpx") as f:
             rv = self.app.post('/upload', data=dict(file=f))
-        assert rv.data == "ok"
+        assert rv.status_code == 200
+        assert "Le fichier à été téléversé avec succès" in rv.data
 
     def test_upload_same_file(self):
         with open("test.gpx") as f:
             rv = self.app.post('/upload', data=dict(file=f))
-        assert rv.data == "ok"
+        assert rv.status_code == 200
+        assert "Le fichier à été téléversé avec succès" in rv.data
 
         with open("test.gpx") as f:
             rv = self.app.post('/upload', data=dict(file=f))
-        assert rv.data == "ok"
+        assert rv.status_code == 200
+        assert "Le fichier à été téléversé avec succès" in rv.data
 
 
 class DataTestCase(SkiTestCase):
@@ -86,8 +91,13 @@ class DataTestCase(SkiTestCase):
 
         rv = self.app.get('/gpx/get/test.gpx')
         assert rv.status_code == 200
+        assert rv.mimetype == "application/gpx+xml"
         with open('test.gpx') as f:
             assert rv.data == f.read()
+
+    def test_get_invalid_gpx(self):
+        rv = self.app.get('/gpx/get/nope.gpx')
+        assert rv.status_code == 404
 
     def test_get_gpx_list(self):
         with open("test.gpx") as f:
@@ -98,9 +108,6 @@ class DataTestCase(SkiTestCase):
         assert rv.data is not None
         x = json.loads(rv.data)
         assert type(x) == list
-        print len(x)
-        print len(ski_mtl.Track.query.all())
-        #assert len(x) == len(ski_mtl.Track.query.all())
 
 
 if __name__ == '__main__':

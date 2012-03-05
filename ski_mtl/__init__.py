@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 import os
 import json
 import requests
 from datetime import datetime
-from flask import Flask, request, url_for, redirect, render_template
+from flask import Flask, Response, request, url_for, redirect, render_template, flash, abort
 from lxml import etree
 from werkzeug.contrib.cache import SimpleCache
 from werkzeug import secure_filename
@@ -10,6 +11,7 @@ from flaskext.sqlalchemy import SQLAlchemy
 #from ski_mtl.models import Track
 
 app = Flask(__name__)
+app.secret_key = "secrettest"
 
 # Setup DB
 if 'DATABASE_URL' in os.environ:
@@ -55,9 +57,9 @@ def test_db(place, data):
 def get_gpx(place):
     t = Track.query.filter(Track.name == place).first()
     if t is not None:
-        return t.data
+        return Response(t.data, mimetype="application/gpx+xml")
     else:
-        return 'null'
+        abort(404)
 
 
 @app.route("/gpx/list")
@@ -96,9 +98,11 @@ def upload():
 
             db.session.add(t)
             db.session.commit()
-            return "ok"
+            flash(u"Le fichier à été téléversé avec succès", "succes");
+            return render_template('upload.html')
         else:
-            return 'invalid file'
+            flash(u"Type de fichier invalide", "error");
+            return render_template('upload.html'), 415
     elif request.method == 'GET':
         return render_template('upload.html')
 
