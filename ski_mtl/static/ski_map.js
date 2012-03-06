@@ -1,4 +1,4 @@
-var locations, infoWindows, icons, ski_markers, glisse_markers, features, map, style_ski, style_glisse, selectedFeatures;
+var locations, infoWindows, icons, ski_markers, glisse_markers, features, map, style_ski, style_glisse, selectedFeatures, tracks;
 
 AutoSizeAnchored = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
 	'autoSize': true
@@ -8,6 +8,7 @@ AutoSizeAnchored = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
 $(document).ready(function(){
 	infoWindows = [];
 	features = [];
+	tracks = [];
 
 	//Icons
 	var size = new OpenLayers.Size(32,37);
@@ -229,7 +230,7 @@ function loadPistes()
 		for (var i in files)
 		{
 			url = '/gpx/get/' + files[i];
-			addGPX(url, i);
+			addGPX(url, files[i]);
 		}
 	});
 }
@@ -258,5 +259,6 @@ function addGPX(file_url, index, color)
 		})
 	});
 
+	tracks.push(lgpx);
 	map.addLayer(lgpx);
 }
