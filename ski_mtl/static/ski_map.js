@@ -52,6 +52,18 @@ $(document).ready(function(){
 			$("#glisseToggle img").attr('src', '/static/button_glisse_grey.png');
 	});
 
+	$("#tracksToggle").click(function() {
+		for (var i in tracks)
+		{
+			tracks[i].setVisibility(!tracks[i].getVisibility());
+		}
+
+		if(tracks[0].getVisibility())
+			$("#tracksToggle img").attr('src', '/static/button_track_blue.png');
+		else
+			$("#tracksToggle img").attr('src', '/static/button_track_grey.png');
+	});
+
 });
 
 
@@ -234,7 +246,6 @@ function loadPistes()
 		}
 	});
 }
-
 
 function addGPX(file_url, index, color)
 {
