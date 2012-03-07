@@ -98,7 +98,7 @@ def upload():
 
             db.session.add(t)
             db.session.commit()
-            flash(u"Le fichier à été téléversé avec succès", "succes");
+            flash(u"Le fichier à été téléversé avec succès", "success");
             return render_template('upload.html')
         else:
             flash(u"Type de fichier invalide", "error");

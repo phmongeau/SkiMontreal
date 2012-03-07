@@ -92,12 +92,12 @@ $(document).ready(function() {
 			for (var i in errors)
 			{
 				file = errors[i];
-				$("#messages").append("<ul class='flashes'><li class='alert alert-error'> le type du ficher " + file + " n'est pas un type accpepté.</li></ul>");
+				$("#messages").append("<ul class='unstyled flashes'><li class='alert alert-error'> le type du ficher " + file + " n'est pas un type accpepté." + '<a class="close" data-dismiss="alert">×</a></li></ul>');
 			}
 		}
 		else (xhr.status === 200)
 		{
-			$("#messages").append("<ul class='flashes'><li class='alert alert-success'>Les fichiers ont été téléversés avec succès</li></ul>");
+			$("#messages").append("<ul class='unstyled flashes'><li class='alert alert-success'>Les fichiers ont été téléversés avec succès" + '<a class="close" data-dismiss="alert">×</a></li></ul>');
 		}
 	}
 
