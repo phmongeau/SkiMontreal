@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	{% block head %}
+	<title>{% block title %}{% endblock %} | SkiMontreal</title>
+	{% endblock %}
+</head>
+<body>
+	<h1 id="logo">Ski Montreal</h1>
+
+	<div id="center">
+		{% block messages %}
+		{% endblock %}
+
+		<ul class="nav nav-tabs">
+			{% block nav %}
+			<li class="active"><a href="/">Carte</a></li>
+			<li ><a href="/contribuer">Contribuer</a></li>
+			{% endblock %}
+		</ul>
+
+		{% block content %}
+		{% endblock %}
+	</div>
+
+	{% block javascript %}
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	{% endblock %}
+	
+</body>
+</html>

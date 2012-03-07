@@ -1,76 +1,12 @@
-<!DOCTYPE HTML>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Ski Montreal</title>
+{% extends "base.html" %}
+{% block title %}Map{% endblock %}
+{% block head %}
+	{{ super() }}
 	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" type="text/css" media="all" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}" type="text/css" media="all" />
 
-	<style type="text/css">
-		img {
-			/* Override Bootstrap */
-			max-width: none !important;
-		}
-		#map {
-			width: 900px;
-			height: 600px;
-			clear: both;
-		}
-		#info, #logo, #center {
-			width: 900px;
-			margin: 0 auto;
-			margin-top: 10px;
-		}
-		#nav {
-			border-bottom: 1px solid #000;
-			width: 100%;
-		}
-
-		#nav a {
-			background: #2A8FD3;
-			clear: both;
-			color: #FFFFFF;
-			display: inline-block;
-			height: 25px;
-			line-height: 25px;
-			text-align: center;
-			width: 150px;
-			-webkit-border-radius: 10px 10px 0px 0px; 
-			-moz-border-radius: 10px 10px 0px 0px; 
-			border-radius: 10px 10px 0px 0px; 
-		}
-
-		#nav a:hover {
-			background: #3A9FE3;
-		}
-
-		.toggle {
-			cursor: pointer;
-		}
-
-		.olMapViewport {
-			-webkit-border-radius : 10px;
-			-moz-border-radius    : 10px;
-			border-radius         : 10px;
-
-			border-top: 1px solid  #888;
-			border-left: 1px solid #888;
-
-			border-bottom: 1px solid #DDD;
-			border-right: 1px solid #DDD;
-		}
-		.olPopupCloseBox {
-			background: url("{{ url_for('static', filename='img/close2.gif') }}") !important;
-		}
-	</style>
-</head>
-<body>
-	<h1 id="logo">Ski Montreal</h1>
-	<div id="center">
-		<ul class="nav nav-tabs">
-			<li class="active"><a href="/">Carte</a></li>
-			<li ><a href="/contribuer">Contribuer</a></li>
-		</ul>
-
+{% endblock %}
+{%block content %}
 		<div id="map">
 		</div>
 
@@ -100,12 +36,10 @@
 		<p>Updated at:
 			<span id="update"></span>
 		</p>
-	</div>
+{% endblock %}
 
-	<!--load javascript-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-
+{% block javascript %}
+	{{ super() }}
 	<script src="{{ url_for('static', filename='OpenLayers/OpenLayers.js') }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='ski_map.js') }}" type="text/javascript"></script>
-</body>
-</html>
+{% endblock %}
