@@ -1,14 +1,16 @@
 $(document).ready(function() {
 
+	// Array Remove - By John Resig (MIT Licensed)
+	Array.prototype.remove = function(from, to) {
+	  var rest = this.slice((to || from) + 1 || this.length);
+	  this.length = from < 0 ? this.length + from : from;
+	  return this.push.apply(this, rest);
+	};
+
 	drop = document.getElementById('dropzone');
 	files = [];
 	file_names = [];
 
-	//drop.onclick = function() {
-		//console.log("test");
-		//document.getElementById("input").click();
-	//};
-	
 	drop.ondragover = function () {
 		this.className = 'hover';
 		document.getElementById("input").style.display = "none";
@@ -45,16 +47,27 @@ $(document).ready(function() {
 		{
 			var f = input_files.item(i);
 			if (f.name.split(".").reverse()[0] === "gpx" && file_names.indexOf(f.name) == -1)
+			{
 				files.push(f);
 				file_names.push(f.name);
+			}
 		}
 		$("#file_list ul").html('');
-		for (var i in files)
+		for (var i = 0; i < files.length; ++i)
 		{
 			var file = files[i];
 			
-			$("#file_list ul").append("<li>" + file.name + "</li>");
+			$("#file_list ul").append("<li class='alert alert-info'><i class='icon-file'></i>" + file.name + "<a id='" + file.name + "' class='close close-file'>x</a></li>");
 		}
+
+		$('.close-file').click(function() {
+			var name = $(this)[0].id;
+			var i = file_names.indexOf(name);
+			file_names.remove(i);
+			files.remove(i);
+
+			$(this).parent().remove();
+		});
 
 	}
 
@@ -70,7 +83,7 @@ $(document).ready(function() {
 		var errors = [];
 
 
-		for (var i in files)
+		for (var i = 0; i < files.length; ++i)
 		{
 			var fd = new FormData();
 			fd.append("file", files[i]);
@@ -83,13 +96,17 @@ $(document).ready(function() {
 			{
 				errors.push(files[i].name)
 			}
-
+			else
+			{
+				files = [];
+				file_names = [];
+				$(".close-file").parent().remove();
+			}
 
 		}
-		console.log(errors);
 		if(errors.length > 0)
 		{
-			for (var i in errors)
+			for (var i = 0; i < errors.length; ++i)
 			{
 				file = errors[i];
 				$("#messages").append("<ul class='unstyled flashes'><li class='alert alert-error'> le type du ficher " + file + " n'est pas un type accpepté." + '<a class="close" data-dismiss="alert">×</a></li></ul>');
