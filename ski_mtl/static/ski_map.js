@@ -79,6 +79,7 @@ function createMap()
 			new OpenLayers.Control.PanZoomBar(),
 			new OpenLayers.Control.LayerSwitcher(),
 			new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}}),
+			new OpenLayers.Control.Attribution(),
 			new OpenLayers.Control.KeyboardDefaults()
 		]
 	}); 
