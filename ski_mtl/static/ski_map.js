@@ -84,7 +84,28 @@ function createMap()
 		]
 	}); 
 
-	layerMapnik = new OpenLayers.Layer.OSM("OSM");
+	var streets = new OpenLayers.Layer.XYZ(
+		"MapBox Streets",
+		[
+			"http://a.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png",
+			"http://b.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png",
+			"http://c.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png",
+			"http://d.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png"
+		], {
+			attribution: "Tiles © <a href='http://mapbox.com/'>MapBox</a> | " + 
+				"Data © <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> " +
+				"and contributors, CC-BY-SA",
+			sphericalMercator: true,
+			transitionEffect: "resize",
+			buffer: 1,
+			numZoomLevels: 16
+		}
+	);
+
+	map.addLayer(streets);
+
+
+	var layerMapnik = new OpenLayers.Layer.OSM("OSM");
 	map.addLayer(layerMapnik);
 
 	map.proj = new OpenLayers.Projection("EPSG:4326");
