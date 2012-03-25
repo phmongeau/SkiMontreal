@@ -194,6 +194,7 @@ function addMarkers(locations, map)
 	for(var i in locations)
 	{
 		loc = locations[i];
+		if(locations.closed) loc.open = false;
 
 		var markerLoc = new OpenLayers.Geometry.Point(loc.longitude, loc.latitude);
 		markerLoc.transform(map.proj, map.getProjectionObject());

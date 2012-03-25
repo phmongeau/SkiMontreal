@@ -114,6 +114,9 @@ def get_conditions():
     if cond is None:
         cond = dict()
 
+        # LA SAISON EST TERMINÉE.
+        cond["closed"] = True
+
         cond.update(get_ski_conditions())
         cond.update(get_glisse_conditions())
 
