@@ -87,10 +87,10 @@ function createMap()
 	var streets = new OpenLayers.Layer.XYZ(
 		"MapBox Streets",
 		[
-			"http://a.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png",
-			"http://b.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png",
-			"http://c.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png",
-			"http://d.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png"
+			"http://a.tiles.mapbox.com/v3/phmongeau.map-5wv4oktn/${z}/${x}/${y}.png",
+			"http://b.tiles.mapbox.com/v3/phmongeau.map-5wv4oktn/${z}/${x}/${y}.png",
+			"http://c.tiles.mapbox.com/v3/phmongeau.map-5wv4oktn/${z}/${x}/${y}.png",
+			"http://d.tiles.mapbox.com/v3/phmongeau.map-5wv4oktn/${z}/${x}/${y}.png"
 		], {
 			attribution: "Tiles © <a href='http://mapbox.com/'>MapBox</a> | " + 
 				"Data © <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> " +
