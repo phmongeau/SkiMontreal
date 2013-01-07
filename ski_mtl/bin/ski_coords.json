@@ -31,8 +31,26 @@
     }, 
     {
         "address": "Parc du Mont-Royal", 
-        "latitude": 45.5075447, 
-        "longitude": -73.5878649, 
+        "latitude": 45.5053184, 
+        "longitude": -73.5891765, 
         "name": "Sentier de ski de randonnée, Mont-Royal"
+    }, 
+    {
+        "address": "Parc Adrien-D-Archambault, Montreal, QC", 
+        "latitude": 45.4561402, 
+        "longitude": -73.55788969999999, 
+        "name": "Sentier de ski de fond, Parc Adrien-D. Archambault"
+    }, 
+    {
+        "address": "Parc Arthur-Therrien, Montreal, QC", 
+        "latitude": 45.5086699, 
+        "longitude": -73.55399249999999, 
+        "name": "Sentier de ski de fond, Parc Arthur-Therrien"
+    }, 
+    {
+        "address": "Rue Masson and Rue d'Iberville, Montreal, QC", 
+        "latitude": 45.5431467, 
+        "longitude": -73.5784304, 
+        "name": "Sentier de ski de randonnée CP, Rosemont"
     }
 ]

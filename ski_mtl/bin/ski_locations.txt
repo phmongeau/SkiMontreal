@@ -22,5 +22,17 @@
     {
         "name": "Sentier de ski de randonnée, Mont-Royal", 
 		"address": "Parc du Mont-Royal"
-    }
+    },
+	{
+		"name": "Sentier de ski de fond, Parc Adrien-D. Archambault",
+		"address": "Parc Adrien-D-Archambault, Montreal, QC"
+	},
+	{
+		"name": "Sentier de ski de fond, Parc Arthur-Therrien",
+		"address": "Parc Arthur-Therrien, Montreal, QC"
+	},
+	{
+		"name": "Sentier de ski de randonnée CP, Rosemont",
+		"address": "Rue Masson and Rue d'Iberville, Montreal, QC"
+	}
 ]
