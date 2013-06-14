@@ -1,0 +1,104 @@
+{ 
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-73.60173200000001, 45.4445195]
+			},
+			"properties": {
+				"address": "3400, boulevard des Trinitaires", 
+				"name": "Sentier de ski de randonnée, Angrignon"
+			}
+		}, 
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-73.6336094, 45.5694585]
+			},
+			"properties": {
+				"address": "rue D'Iberville and rue de Louvain", 
+				"name": "Sentier de ski de randonnée, Comp env Saint-Michel"
+			}
+		}, 
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-73.7030331, 45.5434683]
+			},
+			"properties": {
+				"address": "boulevard Gouin Ouest and boulevard de l'Acadie", 
+				"name": "Sentier de ski de randonnée, De la Merci"
+			}
+		}, 
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-73.6425452, 45.5755015]
+			},
+			"properties": {
+				"address": "Parc des Hirondelles", 
+				"name": "Sentier de ski alpin, Des Hirondelles"
+			}
+		}, 
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-73.5547333, 45.561006]
+			},
+			"properties": {
+				"address": "4601, rue Sherbrooke Est", 
+				"name": "Sentier de ski de randonnée, Maisonneuve"
+			}
+		}, 
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-73.5891765, 45.5053184]
+			},
+			"properties": {
+				"address": "Parc du Mont-Royal", 
+				"name": "Sentier de ski de randonnée, Mont-Royal"
+			}
+		}, 
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-73.55788969999999, 45.4561402]
+			},
+			"properties": {
+				"address": "Parc Adrien-D-Archambault, Montreal, QC", 
+				"name": "Sentier de ski de fond, Parc Adrien-D. Archambault"
+			}
+		}, 
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-73.55399249999999, 45.5086699]
+			},
+			"properties": {
+				"address": "Parc Arthur-Therrien, Montreal, QC", 
+				"name": "Sentier de ski de fond, Parc Arthur-Therrien"
+			}
+		}, 
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-73.5784304, 45.5431467]
+			},
+			"properties": {
+				"address": "Rue Masson and Rue d'Iberville, Montreal, QC", 
+				"name": "Sentier de ski de randonnée CP, Rosemont"
+			}
+		}
+	]
+}
